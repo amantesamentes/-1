@@ -453,7 +453,7 @@
 
   <!-- TITLE -->
   <h1 class="anketa-title">Анкета романтического интереса</h1>
-  <p class="anketa-subtitle">Амантес &nbsp;·&nbsp; форум Амантес</p>
+  <p class="anketa-subtitle">Amantes Amentes</p>
 
   <hr class="divider">
 
@@ -867,7 +867,7 @@ function saveAsImage() {
   const datesData = [...document.querySelectorAll('#dates-list .date-item')].map(r => ({
     label: r.querySelector('.date-label').textContent,
     stars: r.querySelectorAll('.star-btn.active').length,
-  })).filter(d => d.stars > 0);
+  }));
 
   const greenFlags = [...document.querySelectorAll('.flag-box:first-child .flag-lines input')]
     .map(i => i.value.trim()).filter(Boolean);
@@ -886,8 +886,8 @@ function saveAsImage() {
   // We'll just draw with a big canvas then crop
   const canvas = document.createElement('canvas');
   canvas.width = W * 2;
+  canvas.height = 4000; // temp height for measure pass
   const ctx = canvas.getContext('2d');
-  ctx.scale(2, 2); // retina
 
   function drawAll(measure) {
     let y = PAD;
@@ -952,7 +952,7 @@ function saveAsImage() {
       ctx.fillText('АНКЕТА РОМАНТИЧЕСКОГО ИНТЕРЕСА', W/2, y+10);
     }
     y += 26;
-    txt('Амантес · форум Амантес', W/2, y, DARK, 11, 'center', 'Cormorant Garamond, Georgia, serif', 'italic');
+    txt('Amantes Amentes', W/2, y, DARK, 11, 'center', 'Cormorant Garamond, Georgia, serif', 'italic');
     y += 20;
     hline(y); y += 14;
 
@@ -1069,7 +1069,7 @@ function saveAsImage() {
       gy += 18;
     });
 
-    dates.forEach(({ label, stars }) => {
+    datesData.forEach(({ label, stars }) => {
       if (!measure) {
         for (let s = 0; s < 3; s++) {
           ctx.fillStyle = s < stars ? GOLD : TRACK;
@@ -1099,23 +1099,32 @@ function saveAsImage() {
     const flagW = (COL - 12) / 2;
     const greenX = PAD, redX = PAD + flagW + 12;
 
-    if (!measure) {
-      ctx.strokeStyle = BORDER2;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(greenX, y, flagW, 80);
-      ctx.strokeRect(redX,   y, flagW, 80);
-    }
-
     txt('ЗЕЛЁНЫЕ ФЛАГИ', greenX + flagW/2, y+11, GREEN_F, 10, 'center');
     txt('КРАСНЫЕ ФЛАГИ', redX   + flagW/2, y+11, RED_F,   10, 'center');
 
-    greenFlags.slice(0,3).forEach((f,i) => {
-      txt(f, greenX+10, y+28+i*18, TEXT, 11);
+    if (!measure) {
+      // separator lines under titles
+      ctx.strokeStyle = BORDER2; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(greenX+8, y+20); ctx.lineTo(greenX+flagW-8, y+20); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(redX+8,   y+20); ctx.lineTo(redX+flagW-8,   y+20); ctx.stroke();
+    }
+
+    const flagItems = Math.max(greenFlags.length, redFlags.length, 1);
+    const flagH = 28 + flagItems * 18 + 10;
+
+    if (!measure) {
+      ctx.strokeStyle = BORDER2; ctx.lineWidth = 1;
+      ctx.strokeRect(greenX, y, flagW, flagH);
+      ctx.strokeRect(redX,   y, flagW, flagH);
+    }
+
+    greenFlags.slice(0,5).forEach((f,i) => {
+      txt(f, greenX+10, y+30+i*18, TEXT, 11);
     });
-    redFlags.slice(0,3).forEach((f,i) => {
-      txt(f, redX+10, y+28+i*18, TEXT, 11);
+    redFlags.slice(0,5).forEach((f,i) => {
+      txt(f, redX+10, y+30+i*18, TEXT, 11);
     });
-    y += 90;
+    y += flagH;
     y += ornament(y);
 
     // ── IMAGES: aura + flower
@@ -1159,7 +1168,11 @@ function saveAsImage() {
 
   // measure pass to get height
   const totalH = drawAll(true);
+
+  // set final canvas size and draw at 2x for retina
+  canvas.width = W * 2;
   canvas.height = totalH * 2;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset any transforms
   ctx.scale(2, 2);
 
   // real draw
