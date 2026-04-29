@@ -415,7 +415,6 @@
   .img-upload-box {
     position: relative;
     width: 100%;
-    height: 130px;
     border: 1px dashed #4a3618;
     cursor: pointer;
     display: flex;
@@ -426,6 +425,15 @@
     transition: border-color 0.2s;
   }
   .img-upload-box:hover { border-color: #c9a24a; }
+  .img-square {
+    height: 0;
+    padding-bottom: 100%;
+  }
+  .img-square .img-upload-hint {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
   .img-upload-hint {
     font-size: 0.72rem;
     color: #5a4520;
@@ -542,22 +550,38 @@
 
   <div class="divider-ornament">— * —</div>
 
-  <!-- MEDIA: aura, flower -->
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;">
+  <!-- MEDIA: 4 images in a row -->
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.7rem;">
     <div class="media-item">
-      <label>Любовная аура</label>
-      <div class="img-upload-box" id="aura-box" onclick="document.getElementById('aura-input').click()">
-       <img id="aura-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:contain; position:absolute; inset:0;">
-        <span class="img-upload-hint" id="aura-hint">нажмите, чтобы загрузить</span>
-        <input type="file" id="aura-input" accept="image/*" style="display:none" onchange="previewImg(this,'aura-preview','aura-hint')">
+      <label>Аура / атмосфера</label>
+      <div class="img-upload-box img-square" onclick="document.getElementById('img1-input').click()">
+        <img id="img1-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <span class="img-upload-hint" id="img1-hint">загрузить</span>
+        <input type="file" id="img1-input" accept="image/*" style="display:none" onchange="previewImg(this,'img1-preview','img1-hint')">
       </div>
     </div>
     <div class="media-item">
-      <label>Цветок / символ</label>
-      <div class="img-upload-box" id="flower-box" onclick="document.getElementById('flower-input').click()">
-        <img id="flower-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:contain; position:absolute; inset:0;">
-        <span class="img-upload-hint" id="flower-hint">нажмите, чтобы загрузить</span>
-        <input type="file" id="flower-input" accept="image/*" style="display:none" onchange="previewImg(this,'flower-preview','flower-hint')">
+      <label>Цветок / растение</label>
+      <div class="img-upload-box img-square" onclick="document.getElementById('img2-input').click()">
+        <img id="img2-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <span class="img-upload-hint" id="img2-hint">загрузить</span>
+        <input type="file" id="img2-input" accept="image/*" style="display:none" onchange="previewImg(this,'img2-preview','img2-hint')">
+      </div>
+    </div>
+    <div class="media-item">
+      <label>Цвет</label>
+      <div class="img-upload-box img-square" onclick="document.getElementById('img3-input').click()">
+        <img id="img3-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <span class="img-upload-hint" id="img3-hint">загрузить</span>
+        <input type="file" id="img3-input" accept="image/*" style="display:none" onchange="previewImg(this,'img3-preview','img3-hint')">
+      </div>
+    </div>
+    <div class="media-item">
+      <label>Текстура</label>
+      <div class="img-upload-box img-square" onclick="document.getElementById('img4-input').click()">
+        <img id="img4-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <span class="img-upload-hint" id="img4-hint">загрузить</span>
+        <input type="file" id="img4-input" accept="image/*" style="display:none" onchange="previewImg(this,'img4-preview','img4-hint')">
       </div>
     </div>
   </div>
@@ -590,10 +614,10 @@ const partnerTraits = [
   ['Серьёзный','Игривый'],
   ['Сдержанный','Романтичный'],
   ['Добрый','Жестокий'],
-  ['Скромный','Раскованный'],
   ['Беззаботный','Амбициозный'],
-  ['Брутальный','Элегантный'],
   ['Импульсивный','Осторожный'],
+  ['Скромный','Раскованный'],
+  ['Брутальный','Элегантный'],
   ['Обычный','Девиант'],
   ['Ведомый','Доминант'],
   ['Бедный','Богатый'],
@@ -614,7 +638,7 @@ const gifts = [
   'Впечатления','Поэзия / Баллада','Питомец','Недвижимость',
   'Отпуск / Путешествие','Цветы / Растения','Еда','Драгоценные камни',
   'Украшения','Голова врага','Любовное письмо','Новое оружие',
-  'Картина / Рисунок','Деньги', 'Целый день вместе', 'Звезда с неба'
+  'Картина / Рисунок','Деньги','Целый день вместе','Звезда с неба',
 ];
 
 const dates = [
@@ -875,8 +899,7 @@ function saveAsImage() {
   const redFlags = [...document.querySelectorAll('.flag-box:last-child .flag-lines input')]
     .map(i => i.value.trim()).filter(Boolean);
 
-  const auraImg  = document.getElementById('aura-preview');
-  const flowerImg = document.getElementById('flower-preview');
+
 
   // ── canvas setup
   const W = 650;
@@ -1129,34 +1152,38 @@ function saveAsImage() {
     y += ornament(y);
 
     // ── IMAGES: aura + flower
+    const imgLabels = ['АУРА / АТМОСФЕРА', 'ЦВЕТОК / РАСТЕНИЕ', 'ЦВЕТ', 'ТЕКСТУРА'];
+    const imgIds = ['img1-preview','img2-preview','img3-preview','img4-preview'];
+    const imgN = 4;
+    const imgGap = 6;
+    const imgW = (COL - imgGap * (imgN-1)) / imgN;
+    const imgH = imgW; // square
+
+    // labels
     if (!measure) {
       ctx.fillStyle = '#b8892e';
-      ctx.font = `11px "IM Fell English", Georgia, serif`;
+      ctx.font = `9px "IM Fell English", Georgia, serif`;
       ctx.textAlign = 'center';
-      ctx.fillText('ЛЮБОВНАЯ АУРА', PAD + COL/4, y+8);
-      ctx.fillText('ЦВЕТОК / СИМВОЛ', PAD + 3*COL/4, y+8);
+      imgLabels.forEach((lbl, i) => {
+        const cx = PAD + i * (imgW + imgGap) + imgW/2;
+        ctx.fillText(lbl, cx, y+8);
+      });
     }
-    y += 20;
-
-    const imgW = COL/2 - 8;
-    const imgH = 120;
+    y += 18;
 
     if (!measure) {
-      ctx.strokeStyle = BORDER2; ctx.lineWidth=1;
-      ctx.strokeRect(PAD,          y, imgW, imgH);
-      ctx.strokeRect(PAD+imgW+16,  y, imgW, imgH);
-
-if (auraImg && auraImg.src && auraImg.style.display !== 'none') {
-  try { ctx.drawImage(auraImg, PAD, y, imgW, imgH); } catch(e){}
-} else {
-  txt('нет изображения', PAD+imgW/2, y+imgH/2, DARK, 10, 'center');
-}
-if (flowerImg && flowerImg.src && flowerImg.style.display !== 'none') {
-  try { ctx.drawImage(flowerImg, PAD+imgW+16, y, imgW, imgH); } catch(e){}
-} else {
-  txt('нет изображения', PAD+imgW+16+imgW/2, y+imgH/2, DARK, 10, 'center');
-}    
-}
+      imgIds.forEach((id, i) => {
+        const ix = PAD + i * (imgW + imgGap);
+        ctx.strokeStyle = BORDER2; ctx.lineWidth = 1;
+        ctx.strokeRect(ix, y, imgW, imgH);
+        const el = document.getElementById(id);
+        if (el && el.src && el.style.display !== 'none') {
+          try { ctx.drawImage(el, ix, y, imgW, imgH); } catch(e){}
+        } else {
+          txt('загрузить', ix+imgW/2, y+imgH/2, DARK, 9, 'center');
+        }
+      });
+    }
     y += imgH + 14;
 
     // footer
