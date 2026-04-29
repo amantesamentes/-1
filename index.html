@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анкета романтического интереса — Амантес</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1410;
+    color: #d4b98a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+  }
+
+  .page-wrap {
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  /* ── Outer border frame ── */
+  .anketa {
+    background: #1e180f;
+    border: 1px solid #6b4f20;
+    padding: 1.6rem 1.4rem;
+    position: relative;
+  }
+
+  .anketa::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid #3d2e10;
+    pointer-events: none;
+  }
+
+  /* ── Title ── */
+  .anketa-title {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #c9a24a;
+    margin-bottom: 0.3rem;
+  }
+
+  .anketa-subtitle {
+    text-align: center;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    color: #7a6035;
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #4a3618;
+    margin: 1.6rem 0;
+  }
+
+  .divider-ornament {
+    text-align: center;
+    color: #7a5c28;
+    font-size: 0.85rem;
+    margin: 1.4rem 0;
+    letter-spacing: 0.3em;
+  }
+
+  /* ── Section headings ── */
+  .section-title {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #b8892e;
+    text-align: center;
+    margin-bottom: 1.2rem;
+  }
+
+  /* ── Basic info grid ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem 1.2rem;
+  }
+
+  .info-grid .full { grid-column: 1 / -1; }
+
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    border-bottom: 1px solid #3d2e10;
+    padding-bottom: 0.2rem;
+  }
+
+  .field-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: #7a6035;
+    white-space: nowrap;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .field-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #d4b98a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1rem;
+    width: 100%;
+    font-style: italic;
+  }
+
+  .field-input::placeholder { color: #4a3618; font-style: italic; }
+
+  textarea.field-input {
+    resize: vertical;
+    min-height: 60px;
+    border-bottom: none;
+    border: 1px solid #3d2e10;
+    padding: 0.4rem 0.5rem;
+    margin-top: 0.3rem;
+    display: block;
+    width: 100%;
+  }
+
+  /* ── Difficulty hearts ── */
+  .difficulty-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+  }
+
+  .diff-label-small {
+    font-size: 0.7rem;
+    color: #7a6035;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  .diff-tiers {
+    font-size: 0.65rem;
+    color: #5a4520;
+    letter-spacing: 0.06em;
+    text-align: right;
+  }
+
+  .hearts-row { display: flex; gap: 5px; margin-top: 4px; }
+
+  .heart-btn {
+    width: 22px; height: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .heart-svg { transition: fill 0.2s; }
+  .heart-btn.active .heart-svg { fill: #c9a24a; }
+  .heart-btn:not(.active) .heart-svg { fill: #3a2a12; stroke: #6b4f20; stroke-width: 1.5px; }
+
+  /* ── Profile header ── */
+  .profile-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  /* ── Slider traits ── */
+  .traits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 1.2rem;
+  }
+
+  .trait-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 90px;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .trait-label {
+    font-size: 0.78rem;
+    color: #9a7b3e;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  .trait-label.right { text-align: left; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 2px;
+    background: #3d2e10;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #c9a24a;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #c9a24a;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* ── Love languages ── */
+  .love-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+  }
+
+  .custom-checkbox {
+    width: 14px; height: 14px;
+    border: 1px solid #6b4f20;
+    background: #1e180f;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+
+  .custom-checkbox.checked { background: #c9a24a; border-color: #c9a24a; }
+  .custom-checkbox.checked::after { content: ''; display: block; width: 6px; height: 6px; background: #1e180f; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); }
+
+  .check-label { font-size: 0.85rem; color: #b09060; }
+
+  /* ── Gifts & dates two-col ── */
+  .two-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+
+  /* ── Date stars ── */
+  .date-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.35rem;
+  }
+
+  .stars-row { display: flex; gap: 3px; }
+
+  .star-btn {
+    width: 14px; height: 14px;
+    background: none; border: none; cursor: pointer; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .star-svg { transition: fill 0.15s; }
+  .star-btn.active .star-svg { fill: #c9a24a; }
+  .star-btn:not(.active) .star-svg { fill: #3a2a12; stroke: #5a4220; stroke-width: 1.5px; }
+
+  .date-label { font-size: 0.82rem; color: #9a7b3e; }
+
+  /* ── Flags area ── */
+  .flags-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .flag-box {
+    border: 1px solid #3d2e10;
+    padding: 0.8rem;
+  }
+
+  .flag-title {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .flag-title.green { color: #6a8a4a; }
+  .flag-title.red { color: #8a4a4a; }
+
+  .flag-lines input {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #3d2e10;
+    outline: none;
+    color: #d4b98a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.3rem 0;
+    margin-bottom: 0.4rem;
+  }
+
+  .flag-lines input::placeholder { color: #3a2a12; font-style: italic; }
+
+  /* ── Media / Image upload ── */
+  .image-placeholder {
+    width: 100%;
+    height: 120px;
+    border: 1px dashed #4a3618;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #5a4520;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .image-placeholder img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7;
+  }
+
+  .image-placeholder input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+
+  /* ── Song/aura fields ── */
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .media-item label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a6035;
+    margin-bottom: 0.4rem;
+  }
+
+  .media-item input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #3d2e10;
+    outline: none;
+    color: #d4b98a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.88rem;
+    font-style: italic;
+    text-align: center;
+    padding: 0.2rem 0;
+  }
+
+  .media-item input::placeholder { color: #3a2a12; }
+
+  /* ── Copy button ── */
+  .copy-btn {
+    display: block;
+    margin: 2rem auto 0;
+    background: transparent;
+    border: 1px solid #6b4f20;
+    color: #b8892e;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 2rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .copy-btn:hover { background: #3d2e10; color: #d4b98a; }
+
+  .copy-note {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #5a4520;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* ── Image upload ── */
+  .img-upload-box {
+    position: relative;
+    width: 100%;
+    height: 130px;
+    border: 1px dashed #4a3618;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 0.3rem;
+    transition: border-color 0.2s;
+  }
+  .img-upload-box:hover { border-color: #c9a24a; }
+  .img-upload-hint {
+    font-size: 0.72rem;
+    color: #5a4520;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding: 0.5rem;
+    pointer-events: none;
+  }
+
+  @media (max-width: 500px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .traits-grid { grid-template-columns: 1fr; }
+    .two-section { grid-template-columns: 1fr; }
+    .flags-grid { grid-template-columns: 1fr; }
+    .profile-header { grid-template-columns: 1fr; }
+    .trait-row { grid-template-columns: 80px 1fr 80px; }
+    .media-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+<div class="anketa" id="anketa">
+
+  <!-- TITLE -->
+  <h1 class="anketa-title">Анкета романтического интереса</h1>
+  <p class="anketa-subtitle">Амантес &nbsp;·&nbsp; форум Амантес</p>
+
+  <hr class="divider">
+
+  <!-- BASIC INFO + LOVE LANGUAGE -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; align-items:start;">
+
+    <!-- Left: basic info as single column -->
+    <div>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <div class="field-row">
+          <span class="field-label">Имя</span>
+          <input class="field-input" id="info-name" type="text" placeholder="...">
+        </div>
+        <div class="field-row">
+          <span class="field-label">Раса / вид</span>
+          <input class="field-input" id="info-race" type="text" placeholder="...">
+        </div>
+        <div class="field-row">
+          <span class="field-label">Возраст</span>
+          <input class="field-input" id="info-age" type="text" placeholder="внешний / реальный">
+        </div>
+        <div class="field-row">
+          <span class="field-label">Пол</span>
+          <input class="field-input" id="info-gender" type="text" placeholder="...">
+        </div>
+        <div class="field-row">
+          <span class="field-label">Ориентация</span>
+          <input class="field-input" id="info-orient" type="text" placeholder="...">
+        </div>
+        <div class="field-row">
+          <span class="field-label">Знак зодиака</span>
+          <input class="field-input" id="info-zodiac" type="text" placeholder="...">
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: love language -->
+    <div>
+      <p class="section-title" style="margin-bottom:0.7rem;">Язык любви</p>
+      <div class="love-grid" id="love-lang"></div>
+    </div>
+
+  </div>
+
+  <div class="divider-ornament">— * —</div>
+
+  <!-- IDEAL PARTNER TRAITS -->
+  <p class="section-title">Идеальный партнёр</p>
+  <div class="traits-grid" id="partner-traits"></div>
+
+  <div class="divider-ornament">— * —</div>
+
+  <!-- GIFTS & DATES -->
+  <div class="two-section">
+    <div>
+      <p class="section-title">Идеальный подарок</p>
+      <div id="gifts-list"></div>
+    </div>
+    <div>
+      <p class="section-title">Идеальное свидание</p>
+      <div id="dates-list"></div>
+    </div>
+  </div>
+
+  <div class="divider-ornament">— * —</div>
+
+  <!-- FLAGS -->
+  <div class="flags-grid">
+    <div class="flag-box">
+      <p class="flag-title green">Зелёные флаги</p>
+      <div class="flag-lines">
+        <input type="text" placeholder="что привлекает...">
+        <input type="text" placeholder="...">
+        <input type="text" placeholder="...">
+      </div>
+    </div>
+    <div class="flag-box">
+      <p class="flag-title red">Красные флаги</p>
+      <div class="flag-lines">
+        <input type="text" placeholder="что отталкивает...">
+        <input type="text" placeholder="...">
+        <input type="text" placeholder="...">
+      </div>
+    </div>
+  </div>
+
+  <div class="divider-ornament">— * —</div>
+
+  <!-- MEDIA: aura, flower -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;">
+    <div class="media-item">
+      <label>Любовная аура</label>
+      <div class="img-upload-box" id="aura-box" onclick="document.getElementById('aura-input').click()">
+        <img id="aura-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <span class="img-upload-hint" id="aura-hint">нажмите, чтобы загрузить</span>
+        <input type="file" id="aura-input" accept="image/*" style="display:none" onchange="previewImg(this,'aura-preview','aura-hint')">
+      </div>
+    </div>
+    <div class="media-item">
+      <label>Цветок / символ</label>
+      <div class="img-upload-box" id="flower-box" onclick="document.getElementById('flower-input').click()">
+        <img id="flower-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <span class="img-upload-hint" id="flower-hint">нажмите, чтобы загрузить</span>
+        <input type="file" id="flower-input" accept="image/*" style="display:none" onchange="previewImg(this,'flower-preview','flower-hint')">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-top:0;">
+    <button class="copy-btn" style="margin:0;" onclick="generatePost()">Сгенерировать текст поста</button>
+    <button class="copy-btn" style="margin:0;" id="save-img-btn" onclick="saveAsImage()">Сохранить как картинку</button>
+  </div>
+  <p class="copy-note">Текст — для форума. Картинка — красиво поделиться.</p>
+
+  <!-- OUTPUT AREA -->
+  <div id="post-output" style="display:none; margin-top:1.2rem;">
+    <p class="section-title" style="margin-bottom:0.6rem;">Готовый текст поста</p>
+    <textarea id="post-text" readonly style="
+      width:100%; min-height:220px; background:#16110a; border:1px solid #4a3618;
+      color:#d4b98a; font-family:'Cormorant Garamond',Georgia,serif; font-size:0.88rem;
+      padding:0.7rem; resize:vertical; outline:none; line-height:1.6;
+    "></textarea>
+    <button class="copy-btn" style="margin-top:0.6rem;" onclick="copyPost()">Скопировать текст</button>
+  </div>
+
+</div>
+</div>
+
+<script>
+const partnerTraits = [
+  ['Робкий','Уверенный'],
+  ['Серьёзный','Игривый'],
+  ['Сдержанный','Романтичный'],
+  ['Добрый','Жестокий'],
+  ['Зажатый','Раскованный'],
+  ['Скромный','Амбициозный'],
+  ['Брутальный','Элегантный'],
+  ['Плохой','Хороший'],
+  ['Обычный','Девиант'],
+  ['Ведомый','Доминант'],
+  ['Бедный','Богатый'],
+  ['Собственник','Даёт свободу'],
+  ['Закрытый','Искренний'],
+];
+
+const loveLangs = [
+  'Слова одобрения',
+  'Помощь / Действия',
+  'Подарки',
+  'Время',
+  'Физический контакт',
+];
+
+const gifts = [
+  'Локон волос','Поэзия / Баллада','Питомец','Недвижимость',
+  'Отпуск','Цветы / Растения','Еда','Драгоценные камни',
+  'Украшения','Голова врага','Любовное письмо','Новое оружие',
+  'Картина / Рисунок','Деньги',
+];
+
+const dates = [
+  'Пикник','Прогулка','Смотреть на закат','Танцы',
+  'Ограбление','Ужин вместе','День спа','Готовка / Выпечка',
+  'Шоппинг','Купание голышом','Спать вместе','Кровавый ритуал',
+  'Театр','Охота','Секс','Крушить врагов',
+];
+
+function previewImg(input, previewId, hintId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById(previewId);
+    img.src = e.target.result;
+    img.style.display = 'block';
+    document.getElementById(hintId).style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function buildSliders(containerId, pairs) {
+  const c = document.getElementById(containerId);
+  pairs.forEach(([left, right]) => {
+    const row = document.createElement('div');
+    row.className = 'trait-row';
+    row.innerHTML = `
+      <span class="trait-label">${left}</span>
+      <input type="range" min="0" max="100" value="50">
+      <span class="trait-label right">${right}</span>
+    `;
+    c.appendChild(row);
+  });
+}
+
+function buildLoveLang() {
+  const c = document.getElementById('love-lang');
+  loveLangs.forEach(lang => {
+    const row = document.createElement('label');
+    row.className = 'check-row';
+    const box = document.createElement('div');
+    box.className = 'custom-checkbox';
+    box.onclick = function(e) {
+      e.preventDefault();
+      box.classList.toggle('checked');
+    };
+    const lbl = document.createElement('span');
+    lbl.className = 'check-label';
+    lbl.textContent = lang;
+    row.appendChild(box);
+    row.appendChild(lbl);
+    c.appendChild(row);
+  });
+}
+
+function buildCheckList(containerId, items) {
+  const c = document.getElementById(containerId);
+  items.forEach(item => {
+    const row = document.createElement('label');
+    row.className = 'check-row';
+    row.style.marginBottom = '0.35rem';
+    const box = document.createElement('div');
+    box.className = 'custom-checkbox';
+    box.onclick = function(e) { e.preventDefault(); box.classList.toggle('checked'); };
+    const lbl = document.createElement('span');
+    lbl.className = 'check-label';
+    lbl.textContent = item;
+    row.appendChild(box);
+    row.appendChild(lbl);
+    c.appendChild(row);
+  });
+}
+
+function buildDates() {
+  const c = document.getElementById('dates-list');
+  dates.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'date-item';
+    const stars = document.createElement('div');
+    stars.className = 'stars-row';
+    for (let i = 0; i < 3; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'star-btn';
+      btn.dataset.idx = i;
+      btn.innerHTML = `<svg class="star-svg" width="12" height="12" viewBox="0 0 12 12" fill="#3a2a12" stroke="#5a4220" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><polygon points="6,1 7.5,4.5 11,4.8 8.5,7.2 9.2,11 6,9 2.8,11 3.5,7.2 1,4.8 4.5,4.5"/></svg>`;
+      stars.appendChild(btn);
+    }
+    stars.addEventListener('click', function(e) {
+      const btn = e.target.closest('.star-btn');
+      if (!btn) return;
+      const idx = +btn.dataset.idx;
+      const btns = stars.querySelectorAll('.star-btn');
+      btns.forEach((b, i) => b.classList.toggle('active', i <= idx));
+    });
+    const lbl = document.createElement('span');
+    lbl.className = 'date-label';
+    lbl.textContent = item;
+    row.appendChild(stars);
+    row.appendChild(lbl);
+    c.appendChild(row);
+  });
+}
+
+function setHearts(idx) {
+  document.querySelectorAll('#hearts .heart-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i <= idx);
+  });
+}
+
+function generatePost() {
+  const lines = [];
+  const bar = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+
+  lines.push('【 АНКЕТА РОМАНТИЧЕСКОГО ИНТЕРЕСА 】');
+  lines.push(bar);
+
+  // Basic info
+  const fields = [
+    ['Имя', 'info-name'], ['Пол', 'info-gender'], ['Раса / вид', 'info-race'],
+    ['Возраст', 'info-age'], ['Ориентация', 'info-orient'], ['Класс', 'info-class'],
+    ['Мировоззрение', 'info-align'], ['Знак зодиака', 'info-zodiac']
+  ];
+  fields.forEach(([label, id]) => {
+    const val = document.getElementById(id)?.value?.trim();
+    if (val) lines.push(label + ': ' + val);
+  });
+  lines.push('');
+
+  // Love languages
+  const checkedLangs = [];
+  document.querySelectorAll('#love-lang .check-row').forEach(row => {
+    if (row.querySelector('.custom-checkbox.checked')) {
+      checkedLangs.push(row.querySelector('.check-label').textContent);
+    }
+  });
+  lines.push('Язык любви: ' + (checkedLangs.length ? checkedLangs.join(', ') : '—'));
+  lines.push('');
+
+  // Partner traits
+  lines.push('Идеальный партнёр:');
+  document.querySelectorAll('#partner-traits .trait-row').forEach(row => {
+    const left = row.querySelector('.trait-label:first-child').textContent;
+    const right = row.querySelector('.trait-label.right').textContent;
+    const val = row.querySelector('input[type=range]').value;
+    const pos = Math.round(val / 10); // 0–10
+    const track = Array(11).fill('·');
+    track[pos] = '●';
+    lines.push('  ' + left.padEnd(14) + track.join('') + '  ' + right);
+  });
+  lines.push('');
+
+  // Gifts
+  const checkedGifts = [];
+  document.querySelectorAll('#gifts-list .check-row').forEach(row => {
+    if (row.querySelector('.custom-checkbox.checked')) {
+      checkedGifts.push(row.querySelector('.check-label').textContent);
+    }
+  });
+  lines.push('Идеальный подарок: ' + (checkedGifts.length ? checkedGifts.join(', ') : '—'));
+  lines.push('');
+
+  // Dates
+  lines.push('Идеальное свидание:');
+  document.querySelectorAll('#dates-list .date-item').forEach(row => {
+    const activeStars = row.querySelectorAll('.star-btn.active').length;
+    if (activeStars > 0) {
+      const label = row.querySelector('.date-label').textContent;
+      const stars = '★'.repeat(activeStars) + '☆'.repeat(3 - activeStars);
+      lines.push('  ' + stars + '  ' + label);
+    }
+  });
+  if (lines[lines.length-1] === 'Идеальное свидание:') lines.push('  —');
+  lines.push('');
+
+  // Flags
+  lines.push(bar);
+  const greenInputs = document.querySelectorAll('.flag-box:first-child .flag-lines input');
+  const greenVals = [...greenInputs].map(i => i.value.trim()).filter(Boolean);
+  lines.push('Зелёные флаги: ' + (greenVals.length ? greenVals.join(' · ') : '—'));
+
+  const redInputs = document.querySelectorAll('.flag-box:last-child .flag-lines input');
+  const redVals = [...redInputs].map(i => i.value.trim()).filter(Boolean);
+  lines.push('Красные флаги: ' + (redVals.length ? redVals.join(' · ') : '—'));
+  lines.push('');
+
+
+
+  lines.push(bar);
+  lines.push('[ Амантес ]');
+
+  const text = lines.join('\n');
+  document.getElementById('post-text').value = text;
+  document.getElementById('post-output').style.display = 'block';
+  document.getElementById('post-output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyPost() {
+  const ta = document.getElementById('post-text');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => {
+    const btn = document.querySelectorAll('.copy-btn')[1];
+    btn.textContent = 'Скопировано!';
+    setTimeout(() => btn.textContent = 'Скопировать текст', 2000);
+  });
+}
+
+function saveAsImage() {
+  const btn = document.getElementById('save-img-btn');
+  btn.textContent = 'Рисуем...';
+  btn.disabled = true;
+
+  // ── palette
+  const BG       = '#1e180f';
+  const BG2      = '#16110a';
+  const BORDER   = '#6b4f20';
+  const BORDER2  = '#3d2e10';
+  const GOLD     = '#c9a24a';
+  const TEXT      = '#d4b98a';
+  const MUTED    = '#9a7b3e';
+  const DARK     = '#7a6035';
+  const TRACK    = '#3a2a12';
+  const GREEN_F  = '#6a8a4a';
+  const RED_F    = '#8a4a4a';
+
+  // ── collect data
+  const fv = id => (document.getElementById(id)||{}).value||'';
+  const info = [
+    ['Имя',         fv('info-name')],
+    ['Раса / вид',  fv('info-race')],
+    ['Возраст',     fv('info-age')],
+    ['Пол',         fv('info-gender')],
+    ['Ориентация',  fv('info-orient')],
+    ['Знак зодиака',fv('info-zodiac')],
+  ];
+
+  const langs = [...document.querySelectorAll('#love-lang .check-row')]
+    .filter(r => r.querySelector('.custom-checkbox.checked'))
+    .map(r => r.querySelector('.check-label').textContent);
+
+  const traits = [...document.querySelectorAll('#partner-traits .trait-row')].map(r => ({
+    left:  r.querySelector('.trait-label').textContent,
+    right: r.querySelector('.trait-label.right').textContent,
+    val:   +r.querySelector('input[type=range]').value,
+  }));
+
+  const checkedGifts = [...document.querySelectorAll('#gifts-list .check-row')]
+    .filter(r => r.querySelector('.custom-checkbox.checked'))
+    .map(r => r.querySelector('.check-label').textContent);
+
+  const datesData = [...document.querySelectorAll('#dates-list .date-item')].map(r => ({
+    label: r.querySelector('.date-label').textContent,
+    stars: r.querySelectorAll('.star-btn.active').length,
+  })).filter(d => d.stars > 0);
+
+  const greenFlags = [...document.querySelectorAll('.flag-box:first-child .flag-lines input')]
+    .map(i => i.value.trim()).filter(Boolean);
+  const redFlags = [...document.querySelectorAll('.flag-box:last-child .flag-lines input')]
+    .map(i => i.value.trim()).filter(Boolean);
+
+  const auraImg  = document.getElementById('aura-preview');
+  const flowerImg = document.getElementById('flower-preview');
+
+  // ── canvas setup
+  const W = 650;
+  const PAD = 28;
+  const COL = W - PAD * 2;
+
+  // First pass: measure height
+  // We'll just draw with a big canvas then crop
+  const canvas = document.createElement('canvas');
+  canvas.width = W * 2;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2); // retina
+
+  function drawAll(measure) {
+    let y = PAD;
+    const lineH = 22;
+
+    function rect(x, cy, w, h, col, radius=0) {
+      if (measure) return;
+      ctx.fillStyle = col;
+      if (radius) {
+        ctx.beginPath();
+        ctx.roundRect(x, cy, w, h, radius);
+        ctx.fill();
+      } else {
+        ctx.fillRect(x, cy, w, h);
+      }
+    }
+
+    function hline(cy, col=BORDER2, x1=PAD, x2=W-PAD) {
+      if (measure) return;
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x1, cy); ctx.lineTo(x2, cy); ctx.stroke();
+    }
+
+    function txt(str, x, cy, col=TEXT, size=13, align='left', font='Cormorant Garamond, Georgia, serif', style='') {
+      if (measure) return;
+      ctx.fillStyle = col;
+      ctx.font = `${style} ${size}px "${font}"`;
+      ctx.textAlign = align;
+      ctx.textBaseline = 'middle';
+      ctx.fillText(str, x, cy);
+    }
+
+    function sectionTitle(label, cy) {
+      if (!measure) {
+        ctx.fillStyle = '#b8892e';
+        ctx.font = `12px "IM Fell English", Georgia, serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label.toUpperCase(), W/2, cy + 8);
+      }
+      return 22;
+    }
+
+    function ornament(cy) {
+      txt('— * —', W/2, cy+8, DARK, 11, 'center');
+      return 20;
+    }
+
+    // Background
+    rect(0, 0, W, 9999, BG);
+
+    // Outer border (draw after we know height — skip in measure pass)
+
+    // Title
+    y += 10;
+    if (!measure) {
+      ctx.fillStyle = GOLD;
+      ctx.font = `bold 18px "IM Fell English", Georgia, serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('АНКЕТА РОМАНТИЧЕСКОГО ИНТЕРЕСА', W/2, y+10);
+    }
+    y += 26;
+    txt('Амантес · форум Амантес', W/2, y, DARK, 11, 'center', 'Cormorant Garamond, Georgia, serif', 'italic');
+    y += 20;
+    hline(y); y += 14;
+
+    // ── INFO + LOVE LANG two columns
+    const colMid = W/2 + 4;
+    const leftW  = colMid - PAD - 8;
+    const rightW = W - PAD - colMid;
+
+    // left: info fields
+    let ly = y;
+    info.forEach(([label, val]) => {
+      txt(label.toUpperCase(), PAD, ly+9, DARK, 9, 'left');
+      txt(val || '—', PAD + 90, ly+9, TEXT, 13, 'left', 'Cormorant Garamond, Georgia, serif', 'italic');
+      hline(ly+20, BORDER2, PAD, colMid - 12);
+      ly += 26;
+    });
+
+    // right: love lang
+    let ry = y;
+    if (!measure) {
+      ctx.fillStyle = '#b8892e';
+      ctx.font = `11px "IM Fell English", Georgia, serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('ЯЗЫК ЛЮБВИ', colMid + rightW/2, ry + 8);
+    }
+    ry += 22;
+    loveLangs.forEach(lang => {
+      const checked = langs.includes(lang);
+      if (!measure) {
+        // checkbox
+        ctx.strokeStyle = checked ? GOLD : BORDER;
+        ctx.lineWidth = 1;
+        ctx.fillStyle = checked ? GOLD : BG;
+        ctx.fillRect(colMid, ry+1, 12, 12);
+        ctx.strokeRect(colMid, ry+1, 12, 12);
+        if (checked) {
+          ctx.strokeStyle = BG;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(colMid+2, ry+7); ctx.lineTo(colMid+5, ry+10); ctx.lineTo(colMid+10, ry+4);
+          ctx.stroke();
+        }
+      }
+      txt(lang, colMid + 18, ry+7, checked ? TEXT : MUTED, 12);
+      ry += 20;
+    });
+
+    y = Math.max(ly, ry) + 8;
+    y += ornament(y);
+
+    // ── IDEAL PARTNER
+    y += sectionTitle('Идеальный партнёр', y);
+    y += 8;
+
+    const tColW = (COL - 12) / 2;
+    const halfTraits = Math.ceil(traits.length / 2);
+
+    for (let col = 0; col < 2; col++) {
+      let ty = y;
+      const tx = PAD + col * (tColW + 12);
+      const slice = traits.slice(col * halfTraits, col * halfTraits + halfTraits);
+      slice.forEach(({ left, right, val }) => {
+        const trackX = tx + 72;
+        const trackW = tColW - 72 - 72;
+        txt(left,  tx,           ty+8, MUTED, 10, 'left');
+        txt(right, tx+tColW,     ty+8, MUTED, 10, 'right');
+        if (!measure) {
+          ctx.strokeStyle = BORDER2;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(trackX, ty+8); ctx.lineTo(trackX+trackW, ty+8); ctx.stroke();
+          const dotX = trackX + (val/100) * trackW;
+          ctx.fillStyle = GOLD;
+          ctx.beginPath(); ctx.arc(dotX, ty+8, 4, 0, Math.PI*2); ctx.fill();
+        }
+        ty += 20;
+      });
+    }
+    const traitRows = Math.ceil(traits.length / 2);
+    y += traitRows * 20 + 6;
+    y += ornament(y);
+
+    // ── GIFTS + DATES two columns
+    const giftX = PAD;
+    const dateX = W/2 + 6;
+    const secW  = W/2 - PAD - 6;
+
+    if (!measure) {
+      ctx.fillStyle = '#b8892e';
+      ctx.font = `11px "IM Fell English", Georgia, serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('ИДЕАЛЬНЫЙ ПОДАРОК', giftX + secW/2, y+8);
+      ctx.fillText('ИДЕАЛЬНОЕ СВИДАНИЕ', dateX + secW/2, y+8);
+    }
+    y += 22;
+
+    let gy = y, dy = y;
+
+    gifts.forEach(g => {
+      const checked = checkedGifts.includes(g);
+      if (!measure) {
+        ctx.strokeStyle = checked ? GOLD : BORDER;
+        ctx.lineWidth = 1;
+        ctx.fillStyle = checked ? GOLD : BG;
+        ctx.fillRect(giftX, gy+1, 11, 11);
+        ctx.strokeRect(giftX, gy+1, 11, 11);
+        if (checked) {
+          ctx.strokeStyle = BG; ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(giftX+2,gy+6); ctx.lineTo(giftX+5,gy+9); ctx.lineTo(giftX+9,gy+3);
+          ctx.stroke();
+        }
+      }
+      txt(g, giftX+16, gy+7, checked ? TEXT : MUTED, 11);
+      gy += 18;
+    });
+
+    dates.forEach(({ label, stars }) => {
+      if (!measure) {
+        for (let s = 0; s < 3; s++) {
+          ctx.fillStyle = s < stars ? GOLD : TRACK;
+          ctx.strokeStyle = s < stars ? GOLD : BORDER;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          const sx = dateX + s*14 + 6, sy2 = dy+6;
+          const r=5, ir=2.2;
+          for(let p=0;p<5;p++){
+            const a = p*Math.PI*2/5 - Math.PI/2;
+            const a2 = a + Math.PI/5;
+            if(p===0) ctx.moveTo(sx+r*Math.cos(a),sy2+r*Math.sin(a));
+            else ctx.lineTo(sx+r*Math.cos(a),sy2+r*Math.sin(a));
+            ctx.lineTo(sx+ir*Math.cos(a2),sy2+ir*Math.sin(a2));
+          }
+          ctx.closePath(); ctx.fill(); ctx.stroke();
+        }
+      }
+      txt(label, dateX+48, dy+7, stars > 0 ? TEXT : MUTED, 11);
+      dy += 18;
+    });
+
+    y = Math.max(gy, dy) + 8;
+    y += ornament(y);
+
+    // ── FLAGS
+    const flagW = (COL - 12) / 2;
+    const greenX = PAD, redX = PAD + flagW + 12;
+
+    if (!measure) {
+      ctx.strokeStyle = BORDER2;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(greenX, y, flagW, 80);
+      ctx.strokeRect(redX,   y, flagW, 80);
+    }
+
+    txt('ЗЕЛЁНЫЕ ФЛАГИ', greenX + flagW/2, y+11, GREEN_F, 10, 'center');
+    txt('КРАСНЫЕ ФЛАГИ', redX   + flagW/2, y+11, RED_F,   10, 'center');
+
+    greenFlags.slice(0,3).forEach((f,i) => {
+      txt(f, greenX+10, y+28+i*18, TEXT, 11);
+    });
+    redFlags.slice(0,3).forEach((f,i) => {
+      txt(f, redX+10, y+28+i*18, TEXT, 11);
+    });
+    y += 90;
+    y += ornament(y);
+
+    // ── IMAGES: aura + flower
+    if (!measure) {
+      ctx.fillStyle = '#b8892e';
+      ctx.font = `11px "IM Fell English", Georgia, serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('ЛЮБОВНАЯ АУРА', PAD + COL/4, y+8);
+      ctx.fillText('ЦВЕТОК / СИМВОЛ', PAD + 3*COL/4, y+8);
+    }
+    y += 20;
+
+    const imgW = COL/2 - 8;
+    const imgH = 120;
+
+    if (!measure) {
+      ctx.strokeStyle = BORDER2; ctx.lineWidth=1;
+      ctx.strokeRect(PAD,          y, imgW, imgH);
+      ctx.strokeRect(PAD+imgW+16,  y, imgW, imgH);
+
+      if (auraImg && auraImg.src && auraImg.style.display !== 'none') {
+        try { ctx.drawImage(auraImg, PAD, y, imgW, imgH); } catch(e){}
+      } else {
+        txt('нет изображения', PAD+imgW/2, y+imgH/2, DARK, 10, 'center');
+      }
+      if (flowerImg && flowerImg.src && flowerImg.style.display !== 'none') {
+        try { ctx.drawImage(flowerImg, PAD+imgW+16, y, imgW, imgH); } catch(e){}
+      } else {
+        txt('нет изображения', PAD+imgW+16+imgW/2, y+imgH/2, DARK, 10, 'center');
+      }
+    }
+    y += imgH + 14;
+
+    // footer
+    hline(y, BORDER); y += 12;
+    txt('[ Амантес ]', W/2, y+8, DARK, 11, 'center', 'Cormorant Garamond, Georgia, serif', 'italic');
+    y += 24;
+
+    return y + PAD;
+  }
+
+  // measure pass to get height
+  const totalH = drawAll(true);
+  canvas.height = totalH * 2;
+  ctx.scale(2, 2);
+
+  // real draw
+  drawAll(false);
+
+  // outer border
+  ctx.strokeStyle = BORDER;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(8, 8, W-16, totalH-16);
+  ctx.strokeStyle = BORDER2;
+  ctx.strokeRect(14, 14, W-28, totalH-28);
+
+  // download
+  const link = document.createElement('a');
+  link.download = 'амантес-анкета.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+
+  btn.textContent = 'Сохранить как картинку';
+  btn.disabled = false;
+}
+
+buildSliders('partner-traits', partnerTraits);
+buildLoveLang();
+buildCheckList('gifts-list', gifts);
+buildDates();
+</script>
+</body>
+</html>
