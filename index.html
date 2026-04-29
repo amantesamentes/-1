@@ -547,7 +547,7 @@
     <div class="media-item">
       <label>Любовная аура</label>
       <div class="img-upload-box" id="aura-box" onclick="document.getElementById('aura-input').click()">
-        <img id="aura-preview" src="" alt="" style="display:none; width: 100%; height: 100%; object-fit: cover; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+       <img id="aura-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:contain; position:absolute; inset:0;">
         <span class="img-upload-hint" id="aura-hint">нажмите, чтобы загрузить</span>
         <input type="file" id="aura-input" accept="image/*" style="display:none" onchange="previewImg(this,'aura-preview','aura-hint')">
       </div>
@@ -1145,16 +1145,35 @@ function saveAsImage() {
       ctx.strokeRect(PAD,          y, imgW, imgH);
       ctx.strokeRect(PAD+imgW+16,  y, imgW, imgH);
 
-      if (auraImg && auraImg.src && auraImg.style.display !== 'none') {
-        try { ctx.drawImage(auraImg, PAD, y, imgW, imgH); } catch(e){}
-      } else {
-        txt('нет изображения', PAD+imgW/2, y+imgH/2, DARK, 10, 'center');
-      }
-      if (flowerImg && flowerImg.src && flowerImg.style.display !== 'none') {
-        try { ctx.drawImage(flowerImg, PAD+imgW+16, y, imgW, imgH); } catch(e){}
-      } else {
-        txt('нет изображения', PAD+imgW+16+imgW/2, y+imgH/2, DARK, 10, 'center');
-      }
+     // Функция для умной отрисовки (аналог object-fit: contain)
+function drawImageContain(img, x, y, w, h) {
+  const imgRatio = img.naturalWidth / img.naturalHeight;
+  const targetRatio = w / h;
+  let drawW, drawH, drawX, drawY;
+
+  if (imgRatio > targetRatio) {
+    drawW = w;
+    drawH = w / imgRatio;
+  } else {
+    drawH = h;
+    drawW = h * imgRatio;
+  }
+  drawX = x + (w - drawW) / 2;
+  drawY = y + (h - drawH) / 2;
+  ctx.drawImage(img, drawX, drawY, drawW, drawH);
+}
+
+if (auraImg && auraImg.src && auraImg.style.display !== 'none') {
+  try { drawImageContain(auraImg, PAD, y, imgW, imgH); } catch(e){}
+} else {
+  txt('нет изображения', PAD+imgW/2, y+imgH/2, DARK, 10, 'center');
+}
+
+if (flowerImg && flowerImg.src && flowerImg.style.display !== 'none') {
+  try { drawImageContain(flowerImg, PAD+imgW+16, y, imgW, imgH); } catch(e){}
+} else {
+  txt('нет изображения', PAD+imgW+16+imgW/2, y+imgH/2, DARK, 10, 'center');
+}
     }
     y += imgH + 14;
 
