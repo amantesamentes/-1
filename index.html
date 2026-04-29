@@ -553,7 +553,7 @@
   <!-- MEDIA: 4 images in a row -->
   <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.7rem;">
     <div class="media-item">
-      <label>Аура / атмосфера</label>
+      <label>Атмосфера</label>
       <div class="img-upload-box img-square" onclick="document.getElementById('img1-input').click()">
         <img id="img1-preview" src="" alt="" style="display:none;">
         <span class="img-upload-hint" id="img1-hint">загрузить</span>
@@ -561,7 +561,7 @@
       </div>
     </div>
     <div class="media-item">
-      <label>Цветок / растение</label>
+      <label>Растение</label>
       <div class="img-upload-box img-square" onclick="document.getElementById('img2-input').click()">
         <img id="img2-preview" src="" alt="" style="display:none;">
         <span class="img-upload-hint" id="img2-hint">загрузить</span>
@@ -592,7 +592,7 @@
     <button class="copy-btn" style="margin:0;" onclick="generatePost()">Сгенерировать текст поста</button>
     <button class="copy-btn" style="margin:0;" id="save-img-btn" onclick="saveAsImage()">Сохранить как картинку</button>
   </div>
-  <p class="copy-note">Текст — для форума. Картинка — красиво поделиться.</p>
+  <p class="copy-note">Текст — скопировать и вставить на форум; картинку сохранить и вставить обычным способом.</p>
 
   <!-- OUTPUT AREA -->
   <div id="post-output" style="display:none; margin-top:1.2rem;">
@@ -1152,7 +1152,7 @@ function saveAsImage() {
     y += ornament(y);
 
     // ── IMAGES: aura + flower
-    const imgLabels = ['АУРА / АТМОСФЕРА', 'ЦВЕТОК / РАСТЕНИЕ', 'ЦВЕТ', 'ТЕКСТУРА'];
+    const imgLabels = ['АТМОСФЕРА', 'РАСТЕНИЕ', 'ЦВЕТ', 'ТЕКСТУРА'];
     const imgIds = ['img1-preview','img2-preview','img3-preview','img4-preview'];
     const imgN = 4;
     const imgGap = 6;
