@@ -415,19 +415,24 @@
   .img-upload-box {
     position: relative;
     width: 100%;
+    aspect-ratio: 1 / 1;
     border: 1px dashed #4a3618;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
     margin-top: 0.3rem;
     transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .img-upload-box:hover { border-color: #c9a24a; }
-  .img-square {
-    aspect-ratio: 1 / 1;
-    height: auto;
+  .img-upload-box img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
   .img-upload-hint {
     font-size: 0.72rem;
@@ -550,7 +555,7 @@
     <div class="media-item">
       <label>Аура / атмосфера</label>
       <div class="img-upload-box img-square" onclick="document.getElementById('img1-input').click()">
-        <img id="img1-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <img id="img1-preview" src="" alt="" style="display:none;">
         <span class="img-upload-hint" id="img1-hint">загрузить</span>
         <input type="file" id="img1-input" accept="image/*" style="display:none" onchange="previewImg(this,'img1-preview','img1-hint')">
       </div>
@@ -558,7 +563,7 @@
     <div class="media-item">
       <label>Цветок / растение</label>
       <div class="img-upload-box img-square" onclick="document.getElementById('img2-input').click()">
-        <img id="img2-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <img id="img2-preview" src="" alt="" style="display:none;">
         <span class="img-upload-hint" id="img2-hint">загрузить</span>
         <input type="file" id="img2-input" accept="image/*" style="display:none" onchange="previewImg(this,'img2-preview','img2-hint')">
       </div>
@@ -566,7 +571,7 @@
     <div class="media-item">
       <label>Цвет</label>
       <div class="img-upload-box img-square" onclick="document.getElementById('img3-input').click()">
-        <img id="img3-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <img id="img3-preview" src="" alt="" style="display:none;">
         <span class="img-upload-hint" id="img3-hint">загрузить</span>
         <input type="file" id="img3-input" accept="image/*" style="display:none" onchange="previewImg(this,'img3-preview','img3-hint')">
       </div>
@@ -574,7 +579,7 @@
     <div class="media-item">
       <label>Текстура</label>
       <div class="img-upload-box img-square" onclick="document.getElementById('img4-input').click()">
-        <img id="img4-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+        <img id="img4-preview" src="" alt="" style="display:none;">
         <span class="img-upload-hint" id="img4-hint">загрузить</span>
         <input type="file" id="img4-input" accept="image/*" style="display:none" onchange="previewImg(this,'img4-preview','img4-hint')">
       </div>
