@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мудборд — Amantes Amentes</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1410;
+    color: #d4b98a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+  }
+
+  .page-wrap {
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .board {
+    background: #1e180f;
+    border: 1px solid #6b4f20;
+    padding: 1.6rem 1.4rem;
+    position: relative;
+  }
+
+  .board::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid #3d2e10;
+    pointer-events: none;
+  }
+
+  /* ── Header ── */
+  .board-header {
+    text-align: center;
+    margin-bottom: 1.4rem;
+  }
+
+  .board-title {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c9a24a;
+  }
+
+  .board-subtitle {
+    font-size: 0.78rem;
+    color: #7a6035;
+    letter-spacing: 0.08em;
+    font-style: italic;
+    margin-top: 0.2rem;
+  }
+
+  .name-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    border-bottom: 1px solid #4a3618;
+    padding-bottom: 0.4rem;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .name-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a6035;
+    white-space: nowrap;
+  }
+
+  .name-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #d4b98a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    width: 100%;
+    text-align: center;
+  }
+
+  .name-input::placeholder { color: #4a3618; }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid #4a3618;
+    margin: 1.2rem 0;
+  }
+
+  .ornament {
+    text-align: center;
+    color: #5a4520;
+    font-size: 0.82rem;
+    letter-spacing: 0.3em;
+    margin: 1rem 0;
+  }
+
+  /* ── Grid ── */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+  }
+
+  .mood-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .cell-label {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #b8892e;
+    text-align: center;
+  }
+
+  .cell-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 1px dashed #4a3618;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: #16110a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cell-img-wrap:hover { border-color: #c9a24a; }
+
+  .cell-img-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: none;
+  }
+
+  .cell-hint {
+    font-size: 0.68rem;
+    color: #4a3618;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    text-align: center;
+    pointer-events: none;
+    padding: 0.3rem;
+    line-height: 1.4;
+  }
+
+  input[type="file"] { display: none; }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.4rem;
+  }
+
+  .action-btn {
+    background: transparent;
+    border: 1px solid #6b4f20;
+    color: #b8892e;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.45rem 1.4rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .action-btn:hover { background: #3d2e10; color: #d4b98a; }
+
+  .btn-note {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #5a4520;
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 460px) {
+    .mood-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+<div class="board" id="board">
+
+  <div class="board-header">
+    <div class="board-title">Mood Board</div>
+    <div class="board-subtitle">Amantes Amentes</div>
+    <div class="name-row">
+      <span class="name-label">Имя</span>
+      <input class="name-input" id="char-name" type="text" placeholder="...">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="mood-grid" id="mood-grid"></div>
+
+  <div class="ornament">— * —</div>
+
+</div>
+
+<div class="btn-row">
+  <button class="action-btn" id="save-btn" onclick="saveAsImage()">Сохранить как картинку</button>
+</div>
+<p class="btn-note">Картинку можно добавить на форум стандартным способом.</p>
+
+</div>
+
+<script>
+const CELLS = [
+  'Время года',
+  'Растение',
+  'Животное',
+  'Музыка',
+  'Еда',
+  'Цвет',
+  'Одежда',
+  'Дом',
+  'Искусство',
+];
+
+// Build grid
+const grid = document.getElementById('mood-grid');
+CELLS.forEach((label, i) => {
+  const cell = document.createElement('div');
+  cell.className = 'mood-cell';
+
+  const lbl = document.createElement('div');
+  lbl.className = 'cell-label';
+  lbl.textContent = label;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'cell-img-wrap';
+  wrap.id = `wrap-${i}`;
+  wrap.onclick = () => document.getElementById(`file-${i}`).click();
+
+  const img = document.createElement('img');
+  img.id = `img-${i}`;
+  img.alt = label;
+
+  const hint = document.createElement('div');
+  hint.className = 'cell-hint';
+  hint.id = `hint-${i}`;
+  hint.textContent = 'нажмите\nчтобы загрузить';
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.id = `file-${i}`;
+  input.onchange = () => previewImg(input, img, hint);
+
+  wrap.appendChild(img);
+  wrap.appendChild(hint);
+  wrap.appendChild(input);
+  cell.appendChild(lbl);
+  cell.appendChild(wrap);
+  grid.appendChild(cell);
+});
+
+function previewImg(input, imgEl, hintEl) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    imgEl.src = e.target.result;
+    imgEl.style.display = 'block';
+    hintEl.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Canvas save ──
+function saveAsImage() {
+  const btn = document.getElementById('save-btn');
+  btn.textContent = 'Рисуем...';
+  btn.disabled = true;
+
+  const PAD = 24;
+  const W = 650;
+  const COLS = 3;
+  const GAP = 10;
+  const cellW = (W - PAD*2 - GAP*(COLS-1)) / COLS;
+  const cellH = cellW; // square
+
+  const BG     = '#1e180f';
+  const BG2    = '#16110a';
+  const BORDER = '#6b4f20';
+  const BORDER2= '#3d2e10';
+  const GOLD   = '#c9a24a';
+  const TEXT   = '#d4b98a';
+  const MUTED  = '#7a6035';
+  const DARK   = '#4a3618';
+  const ROWS   = Math.ceil(CELLS.length / COLS);
+
+  const HEADER_H = 100;
+  const LABEL_H  = 18;
+  const GRID_H   = ROWS * (cellH + LABEL_H + 6) + (ROWS-1) * GAP;
+  const FOOTER_H = 30;
+  const TOTAL_H  = PAD + HEADER_H + 16 + GRID_H + FOOTER_H + PAD;
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = W * 2;
+  canvas.height = TOTAL_H * 2;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  // BG
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, W, TOTAL_H);
+
+  // Outer borders
+  ctx.strokeStyle = BORDER;  ctx.lineWidth = 1;
+  ctx.strokeRect(4, 4, W-8, TOTAL_H-8);
+  ctx.strokeStyle = BORDER2; ctx.lineWidth = 1;
+  ctx.strokeRect(10, 10, W-20, TOTAL_H-20);
+
+  function t(str, x, y, col, size, align='center', style='') {
+    ctx.fillStyle = col;
+    ctx.font = `${style} ${size}px "IM Fell English", Georgia, serif`;
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(str, x, y);
+  }
+
+  function tc(str, x, y, col, size, align='center', style='') {
+    ctx.fillStyle = col;
+    ctx.font = `${style} ${size}px "Cormorant Garamond", Georgia, serif`;
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(str, x, y);
+  }
+
+  // Title
+  let y = PAD + 18;
+  t('MOOD BOARD', W/2, y, GOLD, 20);
+  y += 24;
+  tc('Amantes Amentes', W/2, y, MUTED, 11, 'center', 'italic');
+  y += 22;
+
+  // Name
+  const name = document.getElementById('char-name').value.trim() || '—';
+  tc('Имя', W/2 - 30, y, MUTED, 10);
+  tc(name, W/2 + 20, y, TEXT, 14, 'center', 'italic');
+  y += 14;
+
+  // Divider
+  ctx.strokeStyle = BORDER2; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD, y); ctx.lineTo(W-PAD, y); ctx.stroke();
+  y += 14;
+
+  // Grid
+  CELLS.forEach((label, i) => {
+    const col = i % COLS;
+    const row = Math.floor(i / COLS);
+    const cx = PAD + col * (cellW + GAP);
+    const cy = y + row * (cellH + LABEL_H + 6 + GAP);
+
+    // label
+    t(label.toUpperCase(), cx + cellW/2, cy + 8, '#b8892e', 9);
+
+    // image box
+    const iy = cy + LABEL_H + 2;
+    ctx.strokeStyle = BORDER2; ctx.lineWidth = 1;
+    ctx.fillStyle = BG2;
+    ctx.fillRect(cx, iy, cellW, cellH);
+    ctx.strokeRect(cx, iy, cellW, cellH);
+
+    const imgEl = document.getElementById(`img-${i}`);
+    if (imgEl && imgEl.src && imgEl.style.display !== 'none') {
+      try {
+        const nw = imgEl.naturalWidth  || imgEl.width  || 1;
+        const nh = imgEl.naturalHeight || imgEl.height || 1;
+        const scale = Math.max(cellW / nw, cellH / nh);
+        const sw = cellW / scale;
+        const sh = cellH / scale;
+        const sx = (nw - sw) / 2;
+        const sy = (nh - sh) / 2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(cx, iy, cellW, cellH);
+        ctx.clip();
+        ctx.drawImage(imgEl, sx, sy, sw, sh, cx, iy, cellW, cellH);
+        ctx.restore();
+      } catch(e) {}
+    } else {
+      tc('загрузить', cx + cellW/2, iy + cellH/2, DARK, 9, 'center', 'italic');
+    }
+  });
+
+  y += GRID_H + 10;
+
+  // Ornament
+  tc('— * —', W/2, y, '#5a4520', 10, 'center');
+  y += 20;
+
+  // Footer
+  tc('[ Amantes Amentes ]', W/2, y, MUTED, 10, 'center', 'italic');
+
+  // Download
+  const link = document.createElement('a');
+  link.download = 'амантес-мудборд.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+
+  btn.textContent = 'Сохранить как картинку';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
