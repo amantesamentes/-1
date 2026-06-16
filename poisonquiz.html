@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Какой ты яд?</title>
+<meta name="description" content="Флуд-игра для персонажей: узнай, каким ядом был бы твой герой по характеру.">
+<meta property="og:title" content="Какой ты яд?">
+<meta property="og:description" content="Тест по характеру персонажа — медленный, обжигающий, сладкий или галлюциногенный?">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --ink: #1c1a17;
+    --parchment: #f5f0e8;
+    --parchment-dim: #ede6d8;
+    --border: rgba(28,26,23,0.18);
+    --muted: #7a7468;
+    --accent: #2e1f0e;
+
+    --c-slow: #1e3040;
+    --c-burn: #4a1208;
+    --c-sweet: #1f2e1a;
+    --c-hallu: #2b1840;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 1rem 4rem;
+  }
+
+  /* noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; width: 100%; max-width: 620px; }
+
+  /* header */
+  .site-header {
+    text-align: center;
+    padding: 3.5rem 0 2rem;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .site-title {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+  .site-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  /* divider ornament */
+  .ornament {
+    text-align: center;
+    color: var(--border);
+    font-family: 'IM Fell English', serif;
+    font-size: 18px;
+    letter-spacing: 0.3em;
+    margin: 2rem 0;
+    user-select: none;
+  }
+
+  /* progress */
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-meta {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--muted); margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .progress-track { height: 1px; background: var(--border); }
+  .progress-fill { height: 1px; background: var(--ink); transition: width 0.4s ease; }
+
+  /* question */
+  .question-text {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.1rem, 3vw, 1.35rem);
+    line-height: 1.55;
+    margin-bottom: 1.8rem;
+    color: var(--ink);
+  }
+
+  /* options */
+  .option {
+    display: flex; align-items: flex-start; gap: 14px;
+    width: 100%; text-align: left; padding: 1rem 1.1rem;
+    margin-bottom: 0.55rem;
+    background: transparent;
+    border: 0.5px solid var(--border);
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 300;
+    color: var(--ink); line-height: 1.55;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .option:hover { background: var(--parchment-dim); border-color: rgba(28,26,23,0.35); }
+  .option.chosen { background: var(--parchment-dim); border-color: var(--ink); }
+  .opt-letter {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
+    color: var(--muted); min-width: 14px; padding-top: 2px; flex-shrink: 0;
+  }
+
+  /* result */
+  .result-wrap { display: none; }
+  .result-poison-card {
+    border: 0.5px solid var(--border);
+    padding: 2rem 2rem 1.5rem;
+    position: relative; overflow: hidden;
+    background: var(--parchment);
+  }
+  .result-poison-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--result-accent, var(--ink));
+  }
+  .result-category {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 0.7rem;
+  }
+  .result-name {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    line-height: 1.2; color: var(--ink); margin-bottom: 1.2rem;
+  }
+  .result-desc {
+    font-size: 14px; line-height: 1.75; color: var(--ink);
+    border-top: 0.5px solid var(--border);
+    padding-top: 1.2rem; margin-bottom: 1.2rem;
+  }
+  .result-traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.5rem; }
+  .trait {
+    font-size: 11px; letter-spacing: 0.06em; padding: 4px 10px;
+    border: 0.5px solid var(--border); color: var(--muted);
+    background: transparent;
+  }
+
+  /* result actions */
+  .result-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 1.2rem; border-top: 0.5px solid var(--border); }
+  .action-btn {
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 400;
+    letter-spacing: 0.05em; padding: 8px 14px; cursor: pointer;
+    background: transparent; border: 0.5px solid var(--border);
+    color: var(--ink); transition: background 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .action-btn:hover { background: var(--parchment-dim); }
+
+  /* share panel */
+  .share-panel {
+    display: none; margin-top: 1rem; padding: 1rem;
+    border: 0.5px solid var(--border); background: var(--parchment-dim);
+  }
+  .share-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .share-url-box {
+    font-family: 'Inter', monospace; font-size: 11px;
+    padding: 8px 10px; background: var(--parchment);
+    border: 0.5px solid var(--border); color: var(--ink);
+    word-break: break-all; margin-bottom: 8px;
+    user-select: all;
+  }
+
+  /* result-page view (when ?r= param present) */
+  .result-page-hint {
+    font-size: 12px; color: var(--muted); text-align: center; margin-top: 2rem;
+    line-height: 1.6;
+  }
+  .result-page-hint a { color: var(--ink); }
+
+  /* footer */
+  .site-footer {
+    text-align: center; margin-top: 4rem;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.06em;
+    border-top: 0.5px solid var(--border); padding-top: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    .result-poison-card { padding: 1.5rem 1.25rem 1.25rem; }
+    .result-actions { flex-direction: column; }
+    .action-btn { justify-content: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .option, .progress-fill { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="site-header">
+    <div class="eyebrow">amantes amentes test</div>
+    <h1 class="site-title">Какой ты яд?</h1>
+    <p class="site-subtitle">Опишите, каким ядом был бы ваш персонаж — медленным и сладким, обжигающим, или вызывающим галлюцинации?</p>
+  </header>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="q-label">Вопрос 1 из 7</span>
+        <span id="q-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <p class="question-text" id="q-text"></p>
+    <div id="options-list"></div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="result-wrap" id="result-screen">
+    <div class="result-poison-card" id="result-card">
+      <div class="result-category" id="r-cat"></div>
+      <h2 class="result-name" id="r-name"></h2>
+      <p class="result-desc" id="r-desc"></p>
+      <div class="result-traits" id="r-traits"></div>
+      <div class="result-actions">
+        <button class="action-btn" onclick="toggleShare()">⊕ Поделиться ссылкой</button>
+        <button class="action-btn" onclick="saveSVG()">↓ Сохранить карточку</button>
+        <button class="action-btn" onclick="restart()">↺ Пройти ещё раз</button>
+      </div>
+      <div class="share-panel" id="share-panel">
+        <div class="share-label">Ссылка на результат — открывается как отдельная страница:</div>
+        <div class="share-url-box" id="share-url-box"></div>
+        <button class="action-btn" style="font-size:11px;padding:6px 12px" onclick="copyLink()">Скопировать</button>
+      </div>
+    </div>
+    <p class="result-page-hint" id="retake-hint" style="display:none">
+      Это чужой результат. Хочешь узнать про своего персонажа?<br>
+      <a href="?" onclick="restart(); return false;">→ Пройти тест</a>
+    </p>
+  </div>
+
+  <div class="ornament">· · ·</div>
+  <footer class="site-footer">для ролевых игр и флуд-тредов &nbsp;·&nbsp; без js-трекеров</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    text: "Вашего персонажа предали. Его первая реакция?",
+    opts: [
+      { t: "Молчит. Просто запоминает.", w: {slow:3} },
+      { t: "Вспыхивает — кричит, уходит, хлопает дверью.", w: {burn:3} },
+      { t: "Улыбается и начинает строить план.", w: {sweet:3} },
+      { t: "Уходит в себя, путается в мыслях и образах.", w: {hallu:3} }
+    ]
+  },
+  {
+    text: "Как ваш персонаж влияет на окружающих?",
+    opts: [
+      { t: "Они не замечают его влияния — пока не поздно.", w: {slow:3, sweet:1} },
+      { t: "Все чувствуют его присутствие мгновенно.", w: {burn:3} },
+      { t: "Люди тянутся к нему сами, не зная зачем.", w: {sweet:3} },
+      { t: "Рядом с ним реальность немного плывёт.", w: {hallu:3} }
+    ]
+  },
+  {
+    text: "Какой у вашего персонажа внутренний темп?",
+    opts: [
+      { t: "Медленный. Он никуда не торопится.", w: {slow:3} },
+      { t: "Резкий, взрывной — всё или ничего.", w: {burn:3} },
+      { t: "Плавный, как мёд, стекающий со стола.", w: {sweet:3} },
+      { t: "Непредсказуемый — он сам не знает.", w: {hallu:3} }
+    ]
+  },
+  {
+    text: "Что скрыто за внешним обликом персонажа?",
+    opts: [
+      { t: "Холодный расчёт и долгая память.", w: {slow:3} },
+      { t: "Жар, который прожжёт насквозь.", w: {burn:3} },
+      { t: "Что-то смертельно притягательное.", w: {sweet:2, hallu:1} },
+      { t: "Лабиринт без выхода и дна.", w: {hallu:3} }
+    ]
+  },
+  {
+    text: "Как персонаж разрушает чужую жизнь — если разрушает?",
+    opts: [
+      { t: "Постепенно. Они сами не понимают, когда стало плохо.", w: {slow:3} },
+      { t: "Громко, ярко, в один момент.", w: {burn:3} },
+      { t: "Они сами идут навстречу гибели — это их выбор.", w: {sweet:3} },
+      { t: "Он меняет их восприятие — они разрушают себя сами.", w: {hallu:3} }
+    ]
+  },
+  {
+    text: "Какой образ лучше описывает вашего персонажа?",
+    opts: [
+      { t: "Трещина во льду, которую не замечаешь.", w: {slow:3} },
+      { t: "Открытое пламя в сухом лесу.", w: {burn:3} },
+      { t: "Спелый плод на ветке у дороги.", w: {sweet:3} },
+      { t: "Зеркало, которое отражает не то.", w: {hallu:3} }
+    ]
+  },
+  {
+    text: "Что остаётся после встречи с вашим персонажем?",
+    opts: [
+      { t: "Осознание, что что-то было выпито изнутри.", w: {slow:3} },
+      { t: "Ожоги, которые не заживают.", w: {burn:3} },
+      { t: "Сладкое послевкусие и желание ещё.", w: {sweet:3} },
+      { t: "Мир, который больше не выглядит прежним.", w: {hallu:3} }
+    ]
+  }
+];
+
+const RESULTS = {
+  slow: {
+    category: "яд замедленного действия",
+    name: "Аконит в чае",
+    desc: "Твой персонаж — это яд, которого не замечают. Он входит тихо, пахнет почти ничем, а симптомы появляются позже — когда бежать уже некуда. В нём нет спешки: он умеет ждать, накапливаться, работать изнутри. Самые опасные — те, кого не боятся.",
+    traits: ["терпение", "холодный расчёт", "долгая память", "невидимое присутствие"],
+    accent: "#1e3040"
+  },
+  burn: {
+    category: "обжигающий яд",
+    name: "Концентрированная кислота",
+    desc: "Твой персонаж — это то, что жжёт сразу и без предупреждения. Он не притворяется и не скрывается — он врывается, оставляет следы и уходит. Его сила в прямолинейности: он разрушает не тихо, а ярко, честно и без извинений.",
+    traits: ["интенсивность", "прямота", "жар", "необратимость"],
+    accent: "#4a1208"
+  },
+  sweet: {
+    category: "сладкий яд",
+    name: "Цианид с запахом миндаля",
+    desc: "Твой персонаж опасен именно потому, что притягивает. Люди тянутся к нему сами — и не замечают, что уже отравлены. В нём есть что-то неотразимое: запах, вкус, тепло. Смерть, которую хочется повторить.",
+    traits: ["притяжение", "обман чувств", "соблазн", "неизбежность"],
+    accent: "#1f2e1a"
+  },
+  hallu: {
+    category: "галлюциногенный яд",
+    name: "Белладонна в полнолуние",
+    desc: "Твой персонаж не убивает тело — он меняет разум. Рядом с ним реальность начинает плыть: человек видит то, чего нет, или перестаёт видеть то, что есть. Он сам, возможно, не знает, где кончается правда и начинается иллюзия.",
+    traits: ["непредсказуемость", "искажение", "глубина", "магнетизм"],
+    accent: "#2b1840"
+  }
+};
+
+let scores = {slow:0, burn:0, sweet:0, hallu:0};
+let current = 0;
+let resultKey = null;
+
+function renderQ() {
+  const q = QUESTIONS[current];
+  const pct = Math.round(current / QUESTIONS.length * 100);
+  document.getElementById('q-label').textContent = 'Вопрос ' + (current+1) + ' из ' + QUESTIONS.length;
+  document.getElementById('q-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('q-text').textContent = q.text;
+
+  const list = document.getElementById('options-list');
+  list.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="opt-letter">' + letters[i] + '</span>' + opt.t;
+    btn.onclick = () => choose(i, btn, opt.w);
+    list.appendChild(btn);
+  });
+}
+
+function choose(idx, btn, weights) {
+  document.querySelectorAll('.option').forEach(b => b.classList.remove('chosen'));
+  btn.classList.add('chosen');
+  btn.disabled = true;
+  setTimeout(() => {
+    Object.keys(weights).forEach(k => scores[k] += weights[k]);
+    current++;
+    if (current < QUESTIONS.length) {
+      renderQ();
+    } else {
+      showResult(getWinner());
+    }
+  }, 260);
+}
+
+function getWinner() {
+  return Object.keys(scores).reduce((a,b) => scores[a] > scores[b] ? a : b);
+}
+
+function showResult(key) {
+  resultKey = key;
+  const r = RESULTS[key];
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  document.getElementById('result-card').style.setProperty('--result-accent', r.accent);
+  document.getElementById('r-cat').textContent = r.category.toUpperCase();
+  document.getElementById('r-name').textContent = r.name;
+  document.getElementById('r-desc').textContent = r.desc;
+  const traitsEl = document.getElementById('r-traits');
+  traitsEl.innerHTML = r.traits.map(t => '<span class="trait">' + t + '</span>').join('');
+  const url = location.origin + location.pathname + '?r=' + key;
+  document.getElementById('share-url-box').textContent = url;
+  history.replaceState(null, '', '?r=' + key);
+}
+
+function toggleShare() {
+  const panel = document.getElementById('share-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+}
+
+function copyLink() {
+  const url = document.getElementById('share-url-box').textContent;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = event.currentTarget;
+    btn.textContent = 'Скопировано ✓';
+    setTimeout(() => btn.textContent = 'Скопировать', 1800);
+  });
+}
+
+function restart() {
+  scores = {slow:0, burn:0, sweet:0, hallu:0};
+  current = 0; resultKey = null;
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('result-screen').querySelector('.result-wrap');
+  document.getElementById('quiz-screen').style.display = 'block';
+  document.getElementById('share-panel').style.display = 'none';
+  document.getElementById('retake-hint').style.display = 'none';
+  history.replaceState(null, '', location.pathname);
+  renderQ();
+}
+
+function saveSVG() {
+  const r = RESULTS[resultKey];
+  const traitsStr = r.traits.join('  ·  ');
+  const words = r.desc.split(' ');
+  const lines = [];
+  let line = '';
+  words.forEach(w => {
+    if ((line + ' ' + w).length > 62) { lines.push(line.trim()); line = w; }
+    else line += ' ' + w;
+  });
+  if (line) lines.push(line.trim());
+  const descLines = lines.slice(0, 5);
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400">
+  <rect width="680" height="400" fill="#1c1a17"/>
+  <rect x="36" y="36" width="608" height="328" fill="#241f1a" stroke="#3a3530" stroke-width="0.5"/>
+  <rect x="36" y="36" width="608" height="3" fill="${r.accent}"/>
+  <text x="68" y="100" font-family="Georgia,serif" font-size="11" fill="#7a7468" letter-spacing="3">${r.category.toUpperCase()}</text>
+  <text x="68" y="148" font-family="Georgia,serif" font-size="38" fill="#f0ece4" font-weight="400">${r.name}</text>
+  <line x1="68" y1="168" x2="612" y2="168" stroke="#3a3530" stroke-width="0.5"/>
+  ${descLines.map((l, i) => `<text x="68" y="${196 + i*22}" font-family="Georgia,serif" font-size="13" fill="#9e9890">${l}</text>`).join('\n  ')}
+  <text x="68" y="${196 + descLines.length*22 + 24}" font-family="Georgia,serif" font-size="11" fill="#5a5550" letter-spacing="1">${traitsStr}</text>
+  <text x="612" y="352" font-family="Georgia,serif" font-size="11" fill="#4a4540" text-anchor="end">какой ты яд? · тест для персонажей</text>
+</svg>`;
+
+  const blob = new Blob([svg], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'яд-' + resultKey + '.svg'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Check URL param on load
+(function() {
+  const params = new URLSearchParams(location.search);
+  const r = params.get('r');
+  if (r && RESULTS[r]) {
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    resultKey = r;
+    const res = RESULTS[r];
+    document.getElementById('result-card').style.setProperty('--result-accent', res.accent);
+    document.getElementById('r-cat').textContent = res.category.toUpperCase();
+    document.getElementById('r-name').textContent = res.name;
+    document.getElementById('r-desc').textContent = res.desc;
+    const traitsEl = document.getElementById('r-traits');
+    traitsEl.innerHTML = res.traits.map(t => '<span class="trait">' + t + '</span>').join('');
+    const url = location.origin + location.pathname + '?r=' + r;
+    document.getElementById('share-url-box').textContent = url;
+    document.getElementById('retake-hint').style.display = 'block';
+  } else {
+    renderQ();
+  }
+})();
+</script>
+</body>
+</html>
