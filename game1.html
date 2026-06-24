@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CODUL NOPȚII // Кодекс Ночи</title>
+<style>
+/* =====================================================
+   КИБЕР-ОККУЛЬТИЗМ: БУХАРЕСТ, ЗИМА 2024
+   Цветовая система:
+   --void:       #07090f  (бездна)
+   --deep:       #0d1117  (глубина)
+   --surface:    #141b26  (поверхность)
+   --panel:      #1c2535  (панели)
+   --border:     #2a3a52  (рамки)
+   --muted:      #4a6080  (приглушённый)
+   --ghost:      #8099b8  (призрак)
+   --blood:      #c0392b  (кровь)
+   --crimson:    #e74c3c  (алый неон)
+   --gold:       #d4a017  (золото маски)
+   --amber:      #f39c12  (янтарь)
+   --arcane:     #8e44ad  (аркан)
+   --violet:     #9b59b6  (фиолет)
+   --teal:       #1abc9c  (бирюза терминала)
+   --cyan:       #16a085  (сиан)
+   --ice:        #a8d8ea  (лёд)
+   --text:       #c9d6e8  (текст)
+   --dim:        #7a8fa8  (тусклый)
+===================================================== */
+
+  :root {
+    --void: #07090f;
+    --deep: #0d1117;
+    --surface: #141b26;
+    --panel: #1c2535;
+    --border: #2a3a52;
+    --muted: #4a6080;
+    --ghost: #8099b8;
+    --blood: #c0392b;
+    --crimson: #e74c3c;
+    --gold: #d4a017;
+    --amber: #f39c12;
+    --arcane: #8e44ad;
+    --violet: #9b59b6;
+    --teal: #1abc9c;
+    --cyan: #16a085;
+    --ice: #a8d8ea;
+    --text: #c9d6e8;
+    --dim: #7a8fa8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Cinzel:wght@400;700&display=swap');
+
+  body {
+    background-color: var(--void);
+    color: var(--text);
+    font-family: 'Rajdhani', 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Фоновая сетка — визуальная подпись проекта */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(26,188,156,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,188,156,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Виньетка по краям */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(7,9,15,0.85) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HUD — ВЕРХНЯЯ ПАНЕЛЬ ===== */
+  #hud {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(7,9,15,0.92);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    padding: 8px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+  }
+
+  .hud-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px var(--teal);
+    white-space: nowrap;
+    margin-right: 8px;
+  }
+
+  .hud-sep { color: var(--border); margin: 0 4px; }
+
+  .stat-block {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .stat-label {
+    color: var(--dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .stat-bar-wrap {
+    width: 60px;
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .stat-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .bar-sanity { background: linear-gradient(90deg, var(--teal), var(--ice)); }
+  .bar-veil   { background: linear-gradient(90deg, var(--arcane), var(--violet)); }
+
+  .stat-val {
+    font-size: 11px;
+    min-width: 30px;
+    text-align: right;
+  }
+
+  .rep-block {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+  }
+  .rep-v { color: var(--crimson); }
+  .rep-m { color: var(--gold); }
+  .rep-c { color: var(--violet); }
+
+  .scene-badge {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 90px 20px 60px;
+    min-height: 100vh;
+  }
+
+  /* ===== ЖУРНАЛ ЗАЦЕПОК ===== */
+  #clues-panel {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 90;
+    background: rgba(7,9,15,0.95);
+    border-top: 1px solid var(--border);
+    max-height: 40px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+  }
+
+  #clues-panel.expanded { max-height: 200px; overflow-y: auto; }
+
+  #clues-header {
+    padding: 6px 16px;
+    color: var(--gold);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  #clues-list {
+    padding: 4px 16px 12px;
+  }
+
+  .clue-item {
+    color: var(--dim);
+    padding: 2px 0;
+    font-size: 10px;
+  }
+  .clue-item::before { content: '◆ '; color: var(--gold); }
+
+  /* ===== ИГРОВОЙ ЭКРАН ===== */
+  #game-screen {
+    opacity: 1;
+    transition: opacity 0.35s ease;
+  }
+  #game-screen.fade-out { opacity: 0; }
+
+  /* ===== ЗАГОЛОВОК СЦЕНЫ ===== */
+  .scene-header {
+    margin-bottom: 24px;
+  }
+
+  .scene-location {
+    font-size: 11px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-family: 'Share Tech Mono', monospace;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scene-location::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 1px;
+    background: var(--teal);
+  }
+
+  .scene-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 4vw, 28px);
+    color: var(--text);
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 0 30px rgba(26,188,156,0.2);
+  }
+
+  /* ===== ТЕКСТ СЦЕНЫ ===== */
+  .scene-text {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 24px;
+    font-size: clamp(14px, 2.5vw, 16px);
+    line-height: 1.75;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    position: relative;
+  }
+
+  /* Эффект свечения у border-left */
+  .scene-text::before {
+    content: '';
+    position: absolute;
+    left: -4px; top: 20%; bottom: 20%;
+    width: 2px;
+    background: var(--teal);
+    filter: blur(4px);
+    opacity: 0.6;
+  }
+
+  /* ===== ВАРИАНТЫ ВЫБОРА ===== */
+  .choices-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .choice-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px 20px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.3px;
+  }
+
+  .choice-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(26,188,156,0.04));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .choice-btn:hover {
+    border-color: var(--teal);
+    color: var(--ice);
+    box-shadow: 0 0 16px rgba(26,188,156,0.12), inset 0 0 20px rgba(26,188,156,0.03);
+    transform: translateX(3px);
+  }
+  .choice-btn:hover::before { opacity: 1; }
+  .choice-btn:active { transform: translateX(1px); }
+
+  .choice-btn .choice-prefix {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    margin-right: 10px;
+    opacity: 0.7;
+  }
+
+  /* Специальные кнопки по фракциям */
+  .choice-btn.vamp-choice { border-color: rgba(231,76,60,0.3); }
+  .choice-btn.vamp-choice:hover { border-color: var(--crimson); box-shadow: 0 0 16px rgba(231,76,60,0.15); color: #ffb3ad; }
+  .choice-btn.vamp-choice .choice-prefix { color: var(--crimson); }
+
+  .choice-btn.magi-choice { border-color: rgba(212,160,23,0.3); }
+  .choice-btn.magi-choice:hover { border-color: var(--gold); box-shadow: 0 0 16px rgba(212,160,23,0.15); color: #ffe9a0; }
+  .choice-btn.magi-choice .choice-prefix { color: var(--gold); }
+
+  .choice-btn.coven-choice { border-color: rgba(155,89,182,0.3); }
+  .choice-btn.coven-choice:hover { border-color: var(--violet); box-shadow: 0 0 16px rgba(155,89,182,0.15); color: #e0c8f0; }
+  .choice-btn.coven-choice .choice-prefix { color: var(--violet); }
+
+  .choice-btn.danger-choice { border-color: rgba(231,76,60,0.5); }
+  .choice-btn.danger-choice .choice-prefix { color: var(--crimson); }
+  .choice-btn.danger-choice:hover { border-color: var(--crimson); box-shadow: 0 0 20px rgba(231,76,60,0.2); }
+
+  /* Иконка фракции */
+  .faction-tag {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 1px;
+  }
+  .ftag-v { background: rgba(231,76,60,0.2); color: var(--crimson); border: 1px solid rgba(231,76,60,0.4); }
+  .ftag-m { background: rgba(212,160,23,0.2); color: var(--gold); border: 1px solid rgba(212,160,23,0.4); }
+  .ftag-c { background: rgba(155,89,182,0.2); color: var(--violet); border: 1px solid rgba(155,89,182,0.4); }
+
+  /* ===== ЭФФЕКТ СОБЫТИЯ (уведомления) ===== */
+  #event-log {
+    position: fixed;
+    top: 60px; right: 16px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    pointer-events: none;
+    max-width: 260px;
+  }
+
+  .event-toast {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    animation: toastIn 0.3s ease, toastOut 0.4s ease 2.6s forwards;
+    pointer-events: none;
+  }
+
+  .toast-pos { color: var(--teal); }
+  .toast-neg { color: var(--crimson); }
+  .toast-neutral { color: var(--gold); }
+
+  @keyframes toastIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes toastOut { to { opacity:0; transform:translateX(20px); } }
+
+  /* ===== ЭКРАН ФИНАЛА ===== */
+  #ending-screen {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+    animation: fadeIn 1s ease;
+  }
+
+  #ending-screen.show { display: block; }
+
+  .ending-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .ending-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 5vw, 36px);
+    margin-bottom: 24px;
+    line-height: 1.2;
+  }
+
+  .ending-divider {
+    width: 60px;
+    height: 1px;
+    margin: 20px auto;
+    opacity: 0.4;
+  }
+
+  .ending-text {
+    max-width: 600px;
+    margin: 0 auto 32px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--ghost);
+    text-align: left;
+  }
+
+  .ending-stats {
+    display: inline-flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 16px 24px;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    margin-bottom: 32px;
+  }
+
+  .restart-btn {
+    background: transparent;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    padding: 12px 32px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .restart-btn:hover {
+    background: rgba(26,188,156,0.1);
+    box-shadow: 0 0 20px rgba(26,188,156,0.2);
+  }
+
+  /* ===== ЭКРАН ЗАСТАВКИ ===== */
+  #splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--void);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    transition: opacity 0.8s ease;
+  }
+
+  #splash-screen.hidden { opacity: 0; pointer-events: none; }
+
+  .splash-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    animation: pulse 3s infinite;
+  }
+
+  .splash-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 6vw, 52px);
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 8px;
+    text-shadow: 0 0 40px rgba(26,188,156,0.3);
+  }
+
+  .splash-ru {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(14px, 3vw, 22px);
+    color: var(--dim);
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+  }
+
+  .splash-desc {
+    max-width: 500px;
+    font-size: 14px;
+    color: var(--ghost);
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  .start-btn {
+    background: transparent;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    padding: 14px 48px;
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.3s;
+    animation: glowPulse 3s infinite;
+  }
+  .start-btn:hover {
+    background: rgba(26,188,156,0.1);
+    box-shadow: 0 0 30px rgba(26,188,156,0.3);
+    letter-spacing: 4px;
+  }
+
+  .splash-warning {
+    margin-top: 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* ===== УТИЛИТЫ И АНИМАЦИИ ===== */
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes pulse { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 0 10px rgba(26,188,156,0.1); }
+    50% { box-shadow: 0 0 25px rgba(26,188,156,0.3); }
+  }
+
+  /* Полоса загрузки снизу */
+  .scanline {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    animation: scan 4s linear infinite;
+    opacity: 0.3;
+    z-index: 50;
+    pointer-events: none;
+  }
+  @keyframes scan { from { top: 0; } to { top: 100%; } }
+
+  /* ===== АДАПТИВНОСТЬ ===== */
+  @media (max-width: 600px) {
+    #hud { font-size: 10px; padding: 6px 10px; gap: 5px; }
+    .hud-title { font-size: 11px; }
+    .stat-bar-wrap { width: 40px; }
+    #app { padding: 80px 14px 50px; }
+    .scene-text { padding: 16px; }
+    .choice-btn { padding: 12px 14px; font-size: 14px; }
+    #event-log { max-width: 200px; right: 10px; }
+  }
+
+  /* Скроллбар */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* Выделение текста */
+  ::selection { background: rgba(26,188,156,0.25); color: var(--ice); }
+</style>
+</head>
+<body>
+
+<!-- Бегущая полоса "сканирования" -->
+<div class="scanline"></div>
+
+<!-- ===== ЭКРАН ЗАСТАВКИ ===== -->
+<div id="splash-screen">
+  <div class="splash-subtitle">// BUCHAREST UNDERGROUND // VARĂ 2026 //<br>ПОДЗЕМНЫЙ БУХАРЕСТ, ЛЕТО 2026; АЛЬТЕРНАТИВНЫЙ СЮЖЕТ</div>
+  <div class="splash-title">CODUL NOPȚII</div>
+  <div class="splash-ru">Кодекс Ночи</div>
+  <div class="splash-desc">
+    Комендантский час введён три недели назад. После теракта на приёме вампирского клана Думитреску
+    Бухарест делится на два мира: Солнечную сторону с патрулями Магистериума
+    и Изнанку, где просыпается что-то древнее.<br><br>
+    Ты — независимый следователь. У тебя нет союзников. Пока.
+  </div>
+  <button class="start-btn" onclick="startGame()">НАЧАТЬ РАССЛЕДОВАНИЕ</button>
+  <div class="splash-warning">⚠ ПРЕДУПРЕЖДЕНИЕ: ВЫСОКИЙ УРОВЕНЬ ОККУЛЬТНОЙ АКТИВНОСТИ</div>
+</div>
+
+<!-- ===== HUD — СТАТУС-БАР ===== -->
+<div id="hud">
+  <div class="hud-title">CODUL NOPȚII</div>
+  <span class="hud-sep">|</span>
+
+  <!-- Рассудок -->
+  <div class="stat-block">
+    <span class="stat-label">РАС</span>
+    <div class="stat-bar-wrap">
+      <div class="stat-bar bar-sanity" id="bar-sanity" style="width:100%"></div>
+    </div>
+    <span class="stat-val" id="val-sanity" style="color:var(--teal)">100%</span>
+  </div>
+
+  <span class="hud-sep">|</span>
+
+  <!-- Завеса -->
+  <div class="stat-block">
+    <span class="stat-label">ЗАВ</span>
+    <div class="stat-bar-wrap">
+      <div class="stat-bar bar-veil" id="bar-veil" style="width:0%"></div>
+    </div>
+    <span class="stat-val" id="val-veil" style="color:var(--violet)">0%</span>
+  </div>
+
+  <span class="hud-sep">|</span>
+
+  <!-- Репутация фракций -->
+  <div class="rep-block">
+    <span class="rep-v">🩸</span>
+    <span id="val-vampires" class="rep-v">0</span>
+    <span style="color:var(--muted);margin:0 4px">·</span>
+    <span class="rep-m">⚖</span>
+    <span id="val-magisterium" class="rep-m">0</span>
+    <span style="color:var(--muted);margin:0 4px">·</span>
+    <span class="rep-c">✦</span>
+    <span id="val-covens" class="rep-c">0</span>
+  </div>
+
+  <div class="scene-badge" id="scene-badge">СЦ 1/20</div>
+</div>
+
+<!-- ===== ЖУРНАЛ ЗАЦЕПОК (СНИЗУ) ===== -->
+<div id="clues-panel" onclick="toggleClues()">
+  <div id="clues-header">
+    <span>◆ ЖУРНАЛ ЗАЦЕПОК <span id="clues-count">(0)</span></span>
+    <span id="clues-toggle-icon">▲</span>
+  </div>
+  <div id="clues-list"></div>
+</div>
+
+<!-- ===== ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ ===== -->
+<div id="event-log"></div>
+
+<!-- ===== ОСНОВНОЙ ИГРОВОЙ КОНТЕЙНЕР ===== -->
+<div id="app">
+  <div id="game-screen"></div>
+  <div id="ending-screen"></div>
+</div>
+
+<script>
+// =============================================================
+//   CODUL NOPȚII // КОДЕКС НОЧИ
+//   Текстовая RPG, сеттинг: оккультный Бухарест, зима 2024-25
+//   Версия 1.0
+// =============================================================
+
+// ===== ГЛОБАЛЬНОЕ СОСТОЯНИЕ =====
+const state = {
+  sanity: 100,          // Рассудок (0-100)
+  veil: 0,              // Завеса (0-100)
+  vampires_rep: 0,      // Репутация: Вампиры
+  magisterium_rep: 0,   // Репутация: Магистериум
+  covens_rep: 0,        // Репутация: Ковены
+  clues: [],            // Массив зацепок
+  current_scene: 1,     // Текущая сцена
+  flags: {},            // Произвольные флаги
+};
+
+// ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+
+/** Изменить состояние и обновить HUD */
+function applyEffects(effects) {
+  if (!effects) return;
+  const toasts = [];
+
+  if (effects.sanity) {
+    state.sanity = Math.max(0, Math.min(100, state.sanity + effects.sanity));
+    toasts.push({ text: `РАССУДОК ${effects.sanity > 0 ? '+' : ''}${effects.sanity}`, cls: effects.sanity > 0 ? 'toast-pos' : 'toast-neg' });
+  }
+  if (effects.veil !== undefined) {
+    state.veil = Math.max(0, Math.min(100, state.veil + effects.veil));
+    toasts.push({ text: `ЗАВЕСА ${effects.veil > 0 ? '+' : ''}${effects.veil}`, cls: effects.veil > 0 ? 'toast-neg' : 'toast-pos' });
+  }
+  if (effects.vampires_rep) {
+    state.vampires_rep += effects.vampires_rep;
+    toasts.push({ text: `🩸 ВАМПИРЫ ${effects.vampires_rep > 0 ? '+' : ''}${effects.vampires_rep}`, cls: effects.vampires_rep > 0 ? 'toast-pos' : 'toast-neg' });
+  }
+  if (effects.magisterium_rep) {
+    state.magisterium_rep += effects.magisterium_rep;
+    toasts.push({ text: `⚖ МАГИСТЕРИУМ ${effects.magisterium_rep > 0 ? '+' : ''}${effects.magisterium_rep}`, cls: effects.magisterium_rep > 0 ? 'toast-pos' : 'toast-neg' });
+  }
+  if (effects.covens_rep) {
+    state.covens_rep += effects.covens_rep;
+    toasts.push({ text: `✦ КОВЕНЫ ${effects.covens_rep > 0 ? '+' : ''}${effects.covens_rep}`, cls: effects.covens_rep > 0 ? 'toast-pos' : 'toast-neg' });
+  }
+  if (effects.clue) {
+    if (!state.clues.includes(effects.clue)) {
+      state.clues.push(effects.clue);
+      toasts.push({ text: `◆ УЛИКА: ${effects.clue}`, cls: 'toast-neutral' });
+    }
+  }
+  if (effects.flag) {
+    state.flags[effects.flag] = true;
+  }
+
+  updateHUD();
+  toasts.forEach((t, i) => showToast(t.text, t.cls, i * 300));
+}
+
+/** Обновить интерфейс HUD */
+function updateHUD() {
+  document.getElementById('bar-sanity').style.width = state.sanity + '%';
+  document.getElementById('val-sanity').textContent = state.sanity + '%';
+  const sc = state.sanity;
+  document.getElementById('val-sanity').style.color = sc > 60 ? 'var(--teal)' : sc > 30 ? 'var(--amber)' : 'var(--crimson)';
+
+  document.getElementById('bar-veil').style.width = state.veil + '%';
+  document.getElementById('val-veil').textContent = state.veil + '%';
+  const vc = state.veil;
+  document.getElementById('val-veil').style.color = vc < 40 ? 'var(--violet)' : vc < 70 ? 'var(--amber)' : 'var(--crimson)';
+
+  document.getElementById('val-vampires').textContent = state.vampires_rep;
+  document.getElementById('val-magisterium').textContent = state.magisterium_rep;
+  document.getElementById('val-covens').textContent = state.covens_rep;
+  document.getElementById('scene-badge').textContent = `СЦ ${state.current_scene}/20`;
+
+  // Журнал зацепок
+  const count = state.clues.length;
+  document.getElementById('clues-count').textContent = `(${count})`;
+  const list = document.getElementById('clues-list');
+  list.innerHTML = state.clues.map(c => `<div class="clue-item">${c}</div>`).join('');
+}
+
+/** Показать всплывающее уведомление */
+function showToast(text, cls, delay = 0) {
+  setTimeout(() => {
+    const log = document.getElementById('event-log');
+    const t = document.createElement('div');
+    t.className = `event-toast ${cls}`;
+    t.textContent = text;
+    log.appendChild(t);
+    setTimeout(() => t.remove(), 3200);
+  }, delay);
+}
+
+/** Переключить журнал зацепок */
+function toggleClues() {
+  const panel = document.getElementById('clues-panel');
+  panel.classList.toggle('expanded');
+  document.getElementById('clues-toggle-icon').textContent = panel.classList.contains('expanded') ? '▼' : '▲';
+}
+
+/** Проверить условие видимости кнопки */
+function checkCondition(cond) {
+  if (!cond) return true;
+  if (cond.clue && !state.clues.includes(cond.clue)) return false;
+  if (cond.flag && !state.flags[cond.flag]) return false;
+  if (cond.not_flag && state.flags[cond.not_flag]) return false;
+  if (cond.vampires_rep !== undefined && state.vampires_rep < cond.vampires_rep) return false;
+  if (cond.magisterium_rep !== undefined && state.magisterium_rep < cond.magisterium_rep) return false;
+  if (cond.covens_rep !== undefined && state.covens_rep < cond.covens_rep) return false;
+  if (cond.sanity !== undefined && state.sanity < cond.sanity) return false;
+  if (cond.veil !== undefined && state.veil < cond.veil) return false;
+  return true;
+}
+
+// =============================================================
+//   СЦЕНАРИЙ — ОБЪЕКТ-КОНФИГ ВСЕХ 20 СЦЕН
+//   Каждая сцена: { title, location, text, choices }
+//   Выбор: { text, type?, condition?, effects, goto }
+//   goto: номер сцены | 'ending' | имя финала
+// =============================================================
+const SCENES = {
+
+  // ─────────────────────────────────────────────────────────
+  //  АКТ I: ПРИБЫТИЕ (Сцены 1–5)
+  // ─────────────────────────────────────────────────────────
+
+  1: {
+    title: 'Вокзал Гара-де-Норд',
+    location: 'СОЛНЕЧНАЯ СТОРОНА // ГАРА-ДЕ-НОРД // 23:47',
+    text: `Поезд из Брашова прибывает с опозданием на два часа — нормально для эпохи комендантского часа. 
+На перроне воняет гарью и дезинфектантом, которым заливают следы Изнанки. 
+Патруль Магистериума в белых плащах с золотой окантовкой прочёсывает вагоны: они ищут нарушителей ограничения на передвижение нежити. 
+Твой телефон вибрирует — анонимное сообщение: <em>"Теракт на приёме Думитреску был постановкой. Приходи на улицу Лупеску, 7. Бери только то, что не жалко потерять."</em>
+Ты приехал в Бухарест за деньгами и правдой. Судя по всему, они здесь неотделимы.`,
+    choices: [
+      {
+        text: 'Подойти к патрулю Магистериума — представиться, предъявить лицензию следователя',
+        type: 'magi',
+        effects: { magisterium_rep: 1, clue: 'Патруль упомянул «протокол Омега» — нечто, введённое после теракта' },
+        goto: 2
+      },
+      {
+        text: 'Немедленно ехать на улицу Лупеску — следовать анонимной наводке',
+        effects: { veil: 5, clue: 'Анонимное сообщение с точным адресом — кто знал, что я еду?' },
+        goto: 3
+      },
+      {
+        text: 'Сначала найти таксиста с Изнанки — местный проводник дороже любой наводки',
+        effects: { sanity: -5, clue: 'Изнанка Бухареста работает по ночному тарифу: деньги вперёд, вопросы потом' },
+        goto: 4
+      }
+    ]
+  },
+
+  2: {
+    title: 'Протокол Омега',
+    location: 'СОЛНЕЧНАЯ СТОРОНА // КПП МАГИСТЕРИУМА // 00:12',
+    text: `Агент Магистериума — молодая женщина с серебряной нашивкой аналитика — проверяет твою лицензию с непроницаемым лицом. 
+Её зовут Нора Бэлческу. Она не говорит этого, но ты видишь имя на бейдже под плащом. 
+"Протокол Омега — закрытая классификация," — произносит она тихо, пока её напарник смотрит в другую сторону. — "Но если ты действительно ищешь, кто стоит за терактом, иди в квартал Флорясса. Там сейчас горят огни, которые не должны гореть." 
+Она возвращает лицензию и добавляет совсем шёпотом: "Культ называет его Спящим. Магистериум называет это ересью. Я называю это катастрофой."
+Она отворачивается прежде, чем ты успеваешь ответить.`,
+    choices: [
+      {
+        text: 'Запомнить имя — Нора Бэлческу. Попробовать найти её позже',
+        effects: { magisterium_rep: 1, flag: 'knows_nora', clue: 'Нора Бэлческу — аналитик Магистериума, знает о Культе' },
+        goto: 5
+      },
+      {
+        text: 'Немедленно ехать в квартал Флорясса',
+        effects: { veil: 8, clue: 'Квартал Флорясса — аномальная активность ночью' },
+        goto: 5
+      },
+      {
+        text: 'Попытаться задержать Нору — потребовать официальный разговор',
+        effects: { magisterium_rep: -2, sanity: -5 },
+        goto: 5
+      }
+    ]
+  },
+
+  3: {
+    title: 'Улица Лупеску, 7',
+    location: 'ИЗНАНКА // УЛИЦА ЛУПЕСКУ // 00:31',
+    text: `Улица Лупеску в час ночи — это облупленные фасады с геральдическими символами под граффити, и запах сырого камня, который не уходит даже зимой. 
+Номер семь — обычный жилой дом. Или был им. Дверь подъезда открыта: кто-то срезал замок профессиональным инструментом. 
+Внутри — на лестничном пролёте — лежит мужчина в дорогом пальто. Он жив: грудь медленно поднимается. 
+На его запястье — татуировка в виде спящего глаза. Рядом — открытый кожаный портфель, из которого торчат документы с грифом "ДУМИТРЕСКУ ЭСТЕЙТ: КОНФИДЕНЦИАЛЬНО".
+Где-то наверху скрипит пол.`,
+    choices: [
+      {
+        text: 'Взять документы Думитреску — это и есть причина анонимного сообщения',
+        effects: { veil: 10, clue: 'Документы Думитреску: финансирование организации «Сон Единый»' },
+        goto: 5
+      },
+      {
+        text: 'Разбудить мужчину с татуировкой — он явно был здесь до тебя',
+        effects: { sanity: -8, veil: 5, clue: 'Мужчина с татуировкой спящего глаза — возможно, агент Культа' },
+        goto: 5
+      },
+      {
+        text: 'Подняться наверх — выяснить, кто ещё здесь',
+        effects: { sanity: -10, clue: 'На втором этаже кто-то ждал: пустая комната, тёплый чай, свежие следы' },
+        goto: 5
+      }
+    ]
+  },
+
+  4: {
+    title: 'Таксист с Изнанки',
+    location: 'ИЗНАНКА // СТОЯНКА У ВОКЗАЛА // 00:05',
+    text: `Таксист находится сам — они всегда находятся сами тех, кто умеет смотреть. 
+Старик со шрамом на шее от неудачного "укуса по согласию" (сейчас это называют "доноратством") молчит первые пять минут, потом говорит: "Ты из тех, кто платит за слова или за молчание?" 
+За слова дороже. Он рассказывает про Охотника в золотой маске, который появился две недели назад — за день до теракта. 
+Говорит, что Охотник не убивает нежить: он маркирует. На телах жертв появляются знаки — и через сутки жертва исчезает, будто засыпает прямо на ходу. 
+"Культ Спящего," — произносит таксист с такой интонацией, будто просто называет погоду. — "Они говорят, что Он уже видит сны."`,
+    choices: [
+      {
+        text: 'Попросить отвезти на улицу Лупеску, 7',
+        effects: { clue: 'Охотник в золотой маске появился до теракта — не охотится, а маркирует жертв' },
+        goto: 3
+      },
+      {
+        text: 'Попросить отвезти в квартал Флорясса — туда, где горят странные огни',
+        effects: { veil: 8, clue: 'Охотник в золотой маске появился до теракта — не охотится, а маркирует жертв' },
+        goto: 5
+      },
+      {
+        text: 'Попросить таксиста стать информатором — регулярная оплата за сведения',
+        effects: { flag: 'has_informer', clue: 'Охотник в золотой маске появился до теракта — не охотится, а маркирует жертв', sanity: 5 },
+        goto: 5
+      }
+    ]
+  },
+
+  5: {
+    title: 'Квартал Флорясса',
+    location: 'ГРАНИЦА ИЗНАНКИ // ФЛОРЯССА // 01:17',
+    text: `Квартал Флорясса — это полоса между мирами. Днём здесь работают кофейни и антикварные лавки. 
+Ночью, в комендантский час, он превращается в нейтральную зону, где Солнечная сторона не имеет власти, а Изнанка ещё не решила, брать ли его себе. 
+В конце переулка горят три свечи в окне второго этажа — сигнал, который любой знаток Изнанки поймёт правильно. 
+Ты видишь двух людей у подъезда: мужчина в дорогом пальто с фамильным перстнем Думитреску и женщина в кожаной куртке с капюшоном, под которым — татуировки из старославянских рун. 
+Они явно не вместе и явно ждут одного и того же — тебя.`,
+    choices: [
+      {
+        text: 'Подойти к мужчине с перстнем Думитреску — вампирский клан, теракт, деньги',
+        type: 'vamp',
+        effects: { vampires_rep: 2, clue: 'Адриан Думитреску — выживший наследник клана, ищет того, кто заказал теракт' },
+        goto: 6
+      },
+      {
+        text: 'Подойти к женщине с рунами — Ковены чаще всего знают то, что не знает никто другой',
+        type: 'coven',
+        effects: { covens_rep: 2, clue: 'Ведьма Мира — связная Ковенов, предупреждает об активации ритуального узла в центре города' },
+        goto: 7
+      },
+      {
+        text: 'Встать так, чтобы видеть обоих — не торопиться, смотреть, кто сделает первый шаг',
+        effects: { sanity: 5, veil: 5 },
+        goto: 8
+      }
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────────
+  //  АКТ II: РАССЛЕДОВАНИЕ (Сцены 6–15)
+  // ─────────────────────────────────────────────────────────
+
+  6: {
+    title: 'Наследник Думитреску',
+    location: 'ИЗНАНКА // КОНСПИРАТИВНАЯ КВАРТИРА ВАМПИРОВ // 02:00',
+    text: `Адриан Думитреску говорит тихо и чётко, будто каждое слово стоит денег — что для вампира, пережившего четыре века, почти буквально правда. 
+Теракт унёс жизни двадцати трёх представителей клана. Синтетическая кровь, которую разливали на приёме, была отравлена: в ней оказался компонент, резонирующий с частотой сна. 
+"Они хотели погрузить моих людей в летаргию," — говорит он. — "Не убить. Использовать как батареи для своего ритуала." 
+На столе — фотографии мест в Бухаресте, отмеченных символом спящего глаза. 
+Адриан смотрит тебе в глаза и спрашивает: "Ты найдёшь того, кто поставил яд в кровь — и я обеспечу тебе свободное передвижение по Изнанке. Откажешься — и ты её уже не покинешь."`,
+    choices: [
+      {
+        text: 'Принять предложение Думитреску — доступ к Изнанке важнее независимости',
+        type: 'vamp',
+        effects: { vampires_rep: 3, flag: 'vamp_ally', clue: 'Синтетическая кровь на приёме была заражена резонатором сна' },
+        goto: 9
+      },
+      {
+        text: 'Торговаться — информация в обе стороны, без обязательств',
+        effects: { vampires_rep: 1, clue: 'Синтетическая кровь на приёме была заражена резонатором сна' },
+        goto: 9
+      },
+      {
+        text: 'Отказаться — угрозы от вампира только укрепляют независимость',
+        effects: { vampires_rep: -2, sanity: -5 },
+        goto: 8
+      }
+    ]
+  },
+
+  7: {
+    title: 'Ведьма Мира',
+    location: 'ИЗНАНКА // ФЛОРЯССА, ДВОР // 01:55',
+    text: `Женщина представляется просто — Мира. Её руны двигаются под кожей, когда она говорит: слабое свечение, как от экрана смартфона под тканью. 
+Ковены следят за ритуальными узлами Бухареста уже полвека. Три недели назад один из узлов — в подвалах старого дворца Мочони-Стирча — начал резонировать. 
+"Культ Спящего нашёл способ использовать чужие сны," — объясняет она. — "Каждый человек, который видит кошмар в радиусе километра от узла, отдаёт частицу своего страха. Страх — это топливо. Теракт с синтетической кровью сгенерировал панику на целый квартал." 
+Мира передаёт тебе карту Бухареста с отмеченными узлами — потёртую, нарисованную от руки. 
+"Мы можем запечатать узлы. Но нам нужен кто-то снаружи системы. Кто-то вроде тебя."`,
+    choices: [
+      {
+        text: 'Взять карту и принять предложение Ковенов',
+        type: 'coven',
+        effects: { covens_rep: 3, flag: 'coven_ally', clue: 'Карта ритуальных узлов Бухареста — 7 точек, три уже активны' },
+        goto: 9
+      },
+      {
+        text: 'Взять карту, но остаться независимым',
+        effects: { covens_rep: 1, clue: 'Карта ритуальных узлов Бухареста — 7 точек, три уже активны' },
+        goto: 9
+      },
+      {
+        text: 'Отказаться от карты — самостоятельно составить маршрут расследования',
+        effects: { veil: 10, sanity: -8 },
+        goto: 9
+      }
+    ]
+  },
+
+  8: {
+    title: 'Наблюдатель',
+    location: 'ГРАНИЦА ИЗНАНКИ // ФЛОРЯССА // 02:10',
+    text: `Ты ждёшь. Оба — мужчина с перстнем и женщина с рунами — наконец замечают, что ты не идёшь ни к кому из них. 
+Они переглядываются. Это красноречивее любых слов: они знакомы, они не союзники, и твоя независимость их беспокоит в равной мере. 
+Через минуту мужчина уходит. Женщина остаётся, подходит и говорит: "Умно. Но опасно." 
+Она называет себя Мира и рассказывает о ритуальных узлах — в более сжатой форме, чем рассказала бы, если бы ты подошёл первым. 
+Под конец добавляет: "Адриан Думитреску злится. А злые вампиры в осаждённом городе — это проблема для всех."`,
+    choices: [
+      {
+        text: 'Попросить Миру организовать встречу с Думитреску — на нейтральной территории',
+        effects: { covens_rep: 1, vampires_rep: 1, clue: 'Мира и Думитреску знакомы — они часть одной паутины, хотят разного' },
+        goto: 9
+      },
+      {
+        text: 'Попросить Миру дать карту узлов и действовать в одиночку',
+        effects: { covens_rep: 1, clue: 'Карта ритуальных узлов Бухареста — 7 точек, три уже активны', veil: 5 },
+        goto: 9
+      },
+      {
+        text: 'Уйти — в одиночку, по собственному плану. Флорясса дала достаточно информации',
+        effects: { sanity: 5, veil: 8 },
+        goto: 9
+      }
+    ]
+  },
+
+  9: {
+    title: 'Изнанка Бухареста',
+    location: 'ИЗНАНКА // РАЗЛИЧНЫЕ ЛОКАЦИИ // 03:00-05:00',
+    text: `Следующие два часа ты проводишь в Изнанке — слое Бухареста, который существует поверх видимого города. 
+Здесь здания двоятся: обычный банк на Солнечной стороне становится площадкой для сделок между вампирскими кланами на Изнанке. 
+Комендантский час здесь существует иначе: не "нельзя выходить", а "выходи, но помни, что патруль в золотых масках не принадлежит ни одной фракции". 
+Ты слышишь про Охотника — его видели у трёх из семи узлов. Не атакует. Просто наблюдает. 
+Синтетическая кровь, отравленная на приёме Думитреску — это была не первая попытка. За последний месяц зафиксировано восемь случаев массовой летаргии в разных кварталах. Каждый раз — рядом с ритуальным узлом.`,
+    choices: [
+      {
+        text: 'Идти к дворцу Мочони-Стирча — главному ритуальному узлу',
+        effects: { veil: 12, clue: 'Дворец Мочони-Стирча: под фундаментом — полость с дооттоманской символикой' },
+        goto: 10
+      },
+      {
+        text: 'Найти производителя синтетической крови — отследить источник заражения',
+        effects: { clue: 'Производитель синтетической крови — лаборатория "Гемокорп", крышует Магистериум' },
+        goto: 11
+      },
+      {
+        text: 'Попробовать выследить Охотника в золотой маске',
+        effects: { sanity: -10, veil: 15, clue: 'Охотник в золотой маске — движется по маршруту, совпадающему с ритуальной картой' },
+        goto: 12
+      }
+    ]
+  },
+
+  10: {
+    title: 'Дворец Мочони-Стирча',
+    location: 'ИЗНАНКА // ДВОРЕЦ МОЧОНИ-СТИРЧА // 04:30',
+    text: `Дворец выглядит заброшенным со времён национализации. Снаружи — ржавые ворота и таблички о реставрации, которой не будет. 
+Изнутри — совершенно другая история. Подвалы живут своей жизнью: горят масляные фонари, пол застелен символами, нарисованными чем-то, что пахнет как старая кровь и озон одновременно. 
+В центре зала — человек без лица. Не маска: буквально нет лица, только кожа там, где должны быть черты. Он поворачивается к тебе — и ты понимаешь, что он давно знал, что ты придёшь. 
+"Ты ищешь того, кто разбудит Спящего," — говорит он голосом, который звучит как несколько голосов одновременно. — "Ты нашёл место, где Он уже видит. Ты сам уже видел Его сны. Ты просто не помнишь."
+Рассудок трещит по краям.`,
+    choices: [
+      {
+        text: 'Потребовать имя — кто возглавляет Культ Спящего',
+        effects: { sanity: -15, veil: 20, clue: 'Лицо Культа — Безликий Жрец, возможно не человек вообще' },
+        goto: 13
+      },
+      {
+        text: 'Отступить и запечатать вход в подвал — дать время Ковенам',
+        effects: { covens_rep: 2, sanity: -5, clue: 'Дворец Мочони-Стирча запечатан временно — Культ успел завершить первый этап' },
+        goto: 13
+      },
+      {
+        text: 'Атаковать — пытаться уничтожить то, что находится в центре зала',
+        condition: { clue: 'Карта ритуальных узлов Бухареста — 7 точек, три уже активны' },
+        effects: { sanity: -20, veil: 10, clue: 'Ритуальный узел можно разрушить — но это требует жертвы. Узел отдал тебе часть Завесы' },
+        goto: 13
+      }
+    ]
+  },
+
+  11: {
+    title: 'Лаборатория Гемокорп',
+    location: 'СОЛНЕЧНАЯ СТОРОНА // ПРОМЗОНА КОЛЕНТИНА // 05:00',
+    text: `"Гемокорп" прячется в промышленной зоне Колентина: снаружи — склад запчастей, внутри — стерильные залы с центрифугами и холодильными камерами, полными мешков с синтетической кровью. 
+Охранник на входе носит нашивку Магистериума под гражданским жилетом — они официально "не при делах", но присутствие очевидно. 
+Тебе удаётся проникнуть через технический вход. В серверной ты находишь логи поставок: три партии синтетической крови за последний месяц прошли через отдел "Специальные добавки" — куратор партий подписался как "Д.А." 
+Д.А. — Думитреску Андрей. Не Адриан. Другой член клана. Тот, чьё тело нашли через неделю после теракта с маркой Охотника на запястье.
+Кто-то внутри вампирского клана работал с Культом.`,
+    choices: [
+      {
+        text: 'Скопировать логи и передать Адриану Думитреску — предатель в клане важнее всего',
+        type: 'vamp',
+        effects: { vampires_rep: 3, clue: 'Предатель в клане Думитреску — Андрей Думитреску, работал с Культом, убит Охотником' },
+        goto: 13
+      },
+      {
+        text: 'Скопировать логи и передать Магистериуму — официально подключить власть',
+        type: 'magi',
+        effects: { magisterium_rep: 3, clue: 'Предатель в клане Думитреску — Андрей Думитреску, работал с Культом, убит Охотником' },
+        goto: 13
+      },
+      {
+        text: 'Уничтожить логи — и оставить эту улику только себе',
+        effects: { clue: 'Предатель в клане Думитреску — Андрей Думитреску, работал с Культом, убит Охотником', sanity: 5 },
+        goto: 13
+      }
+    ]
+  },
+
+  12: {
+    title: 'Охотник в Золотой Маске',
+    location: 'ИЗНАНКА // КРЫША ДОМА НА КАЛЯ МОШИЛОР // 03:45',
+    text: `Ты находишь его на крыше. Он не прячется: просто стоит и смотрит вниз на перекрёсток, где патруль Магистериума разгоняет нарушителей комендантского часа. 
+Золотая маска — цельная, без прорезей для глаз — каким-то образом позволяет ему видеть. 
+Он слышит тебя раньше, чем ты открываешь рот: "Следователь. Хорошо. Мне нужен свидетель." 
+Его голос — обычный, усталый. Он снимает перчатку и показывает запястье: знак Культа — тот же спящий глаз, что у людей, которых он маркирует. 
+"Я был одним из них," — говорит он. — "Семь лет. Потом Спящий показал мне финал. Я видел всё. И теперь пытаюсь остановить то, чему сам помогал строить." 
+Его имя — Штефан Мань. Он знает все семь узлов. Он знает ритуал. И он один.`,
+    choices: [
+      {
+        text: 'Поверить Штефану — взять его как союзника и проводника',
+        effects: { flag: 'hunter_ally', veil: 10, clue: 'Штефан Мань — бывший агент Культа, знает все 7 узлов и финальный ритуал' },
+        goto: 13
+      },
+      {
+        text: 'Выслушать и предать — рассказать Думитреску или Магистериуму о Штефане',
+        condition: { flag: 'vamp_ally' },
+        type: 'vamp',
+        effects: { vampires_rep: 2, sanity: -10, clue: 'Штефан Мань — бывший агент Культа, знает все 7 узлов и финальный ритуал' },
+        goto: 13
+      },
+      {
+        text: 'Потребовать доказательств — кому-то с маской Культа на запястье нельзя просто доверять',
+        effects: { sanity: 5, flag: 'hunter_suspicious', clue: 'Штефан Мань — утверждает, что покинул Культ. Требует проверки' },
+        goto: 13
+      }
+    ]
+  },
+
+  13: {
+    title: 'Комендантский Час',
+    location: 'СОЛНЕЧНАЯ СТОРОНА // РАССВЕТ // 06:00',
+    text: `Рассвет в Бухаресте зимой — это не свет, а просто другой оттенок темноты. Патрули Магистериума сменяются. 
+Ты прячешься в подъезде, пока мимо проходит колонна: солдаты в белом, с серебряными жезлами, способными причинить вред нежити. 
+За одну ночь ты узнал слишком много и слишком мало. Синтетическая кровь отравлена. Ритуальные узлы активны. Внутри вампирского клана был предатель. Охотник оказался бывшим членом Культа. 
+Твой телефон разряжается. Последнее сообщение — от неизвестного номера: "Финальный ритуал. Три ночи. Место выбирают сами. Три варианта: дворец, подземелья Антима, площадь Революции. Если ты знаешь, где — иди туда первым. Если нет — Бухарест увидит последний сон."
+Три ночи. Значит, сейчас — работа.`,
+    choices: [
+      {
+        text: 'Обратиться к Магистериуму за официальной поддержкой — доложить всё, что известно',
+        type: 'magi',
+        effects: { magisterium_rep: 3, clue: 'Магистериум знает о трёх ночах — запустили протокол поиска ритуального места' },
+        goto: 14
+      },
+      {
+        text: 'Собрать всех союзников — Думитреску, Ковены, и если нашёл — Штефана',
+        effects: { sanity: 5, flag: 'coalition_attempt', clue: 'Коалиция против Культа: неустойчивая, но возможная' },
+        goto: 14
+      },
+      {
+        text: 'Действовать в одиночку — ни одной из фракций нельзя доверять полностью',
+        effects: { sanity: -5, veil: 10, flag: 'solo_path' },
+        goto: 14
+      }
+    ]
+  },
+
+  14: {
+    title: 'Вторая Ночь',
+    location: 'ИЗНАНКА // АРХИВЫ КУЛЬТА // ВТОРАЯ НОЧЬ',
+    text: `Вторая ночь приносит конкретику. Агенты, союзники, информаторы — все они сходятся в одном: Культ Спящего готовит не просто ритуал. 
+Это пробуждение. Спящий — существо или сила, которую они называют богом, — не спит в каком-то физическом месте. Он спит в коллективном бессознательном Бухареста. Каждый кошмар горожанина — это Его дыхание. 
+Ковены называют это "Великой Летаргией" — явление, зафиксированное в 1917, 1944 и 1989 годах. Каждый раз перед большим переломом. 
+Магистериум называет это "аномалией класса Омега" и боится её настолько, что предпочитает засекречивать, а не изучать. 
+Вампиры клана Думитреску называют это "Первым Договором" — соглашением между их предками и чем-то, что существовало до людей. 
+В архивах ты находишь имя организатора финального ритуала: Элена Шербан. Профессор фольклора. Исчезла восемь лет назад. Предположительно мертва.`,
+    choices: [
+      {
+        text: 'Найти Элену Шербан — или то, чем она стала за восемь лет',
+        effects: { veil: 15, clue: 'Элена Шербан — возглавляет Культ. Не мертва. Стала чем-то другим' },
+        goto: 15
+      },
+      {
+        text: 'Сосредоточиться на месте ритуала — вычислить его до третьей ночи',
+        effects: { sanity: 5, clue: 'Место финального ритуала: максимальный резонанс у площади Революции' },
+        goto: 15
+      },
+      {
+        text: 'Найти способ разрушить все семь узлов — без ритуала пробуждение невозможно',
+        condition: { clue: 'Карта ритуальных узлов Бухареста — 7 точек, три уже активны' },
+        type: 'coven',
+        effects: { covens_rep: 3, sanity: -8, clue: 'Узлы можно разрушить, но это требует координации всех Ковенов и жертвы Завесой' },
+        goto: 15
+      }
+    ]
+  },
+
+  15: {
+    title: 'Элена Шербан',
+    location: 'ИЗНАНКА // КОММУНА КУЛЬТА // ТРЕТЬЯ НОЧЬ — НАЧАЛО',
+    text: `Ты находишь её в заброшенной церкви на окраине Флорясса. Элена Шербан — женщина около пятидесяти, но время её не касается так, как должно. 
+Она сидит в центре пентаграммы из книг и рукописей, и улыбается тебе как старому знакомому. 
+"Ты думаешь, что пришёл остановить пробуждение," — говорит она. — "Но ты пришёл потому, что Спящий позвал тебя. Каждый следователь в этом городе, который копал достаточно глубоко — Он их всех позвал." 
+Она объясняет: Спящий не зло. Он просто другой. Он видит Бухарест иначе — как единый живой организм, а не как толпу индивидуумов. Пробуждение превратит город в сон — бесконечный, без боли, без страха. 
+"Только без выбора," — добавляет она почти грустно. — "Это единственная цена. Но цена небольшая, правда?"
+Рассудок говорит "нет". Завеса шепчет "подожди, послушай ещё".`,
+    choices: [
+      {
+        text: 'Отвергнуть — схватить Элену и передать Магистериуму или союзникам',
+        effects: { sanity: 10, magisterium_rep: 2, clue: 'Элена Шербан задержана — ритуал не отменён, у Культа есть запасной план' },
+        goto: 16
+      },
+      {
+        text: 'Слушать дальше — понять, что именно произойдёт при пробуждении',
+        effects: { sanity: -15, veil: 20, clue: 'Пробуждение Спящего: Бухарест превратится в вечный сон, обратного пути нет' },
+        goto: 16
+      },
+      {
+        text: 'Предложить сделку — остановить ритуал в обмен на то, что Культ уйдёт из города',
+        effects: { sanity: -5, veil: 10, flag: 'deal_offered', clue: 'Элена рассмотрит сделку — но только если принесёшь ей доказательство серьёзности намерений' },
+        goto: 16
+      }
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────────
+  //  АКТ III: КУЛЬМИНАЦИЯ (Сцены 16–19)
+  // ─────────────────────────────────────────────────────────
+
+  16: {
+    title: 'Выбор Места',
+    location: 'БУХАРЕСТ // ТРЕТЬЯ НОЧЬ // 21:00',
+    text: `Третья ночь. Ритуал начнётся в полночь — через три часа. 
+Данные сходятся: Культ активировал все семь узлов. Финальный ритуал требует места с максимальным резонансом — точки, где Солнечная сторона и Изнанка перекрываются сильнее всего. 
+Три кандидата остаются на карте: 
+Первый — дворец Мочони-Стирча, где Безликий Жрец уже ждёт. Там самый старый узел. 
+Второй — монастырь Антим, где Ковены когда-то строили первые защитные барьеры. Если его использует Культ, барьеры обратятся против города. 
+Третий — площадь Революции. Исторически заряженное место. Три революции, расстрел диктатора, кровь в брусчатке. Спящий называет его "сердцем коллективного страха".
+Тебе нужно выбрать, куда идти.`,
+    choices: [
+      {
+        text: 'Дворец Мочони-Стирча — встретить Безликого Жреца напрямую',
+        effects: { veil: 10, flag: 'go_palace', clue: 'Финальный ритуал: дворец Мочони-Стирча' },
+        goto: 17
+      },
+      {
+        text: 'Монастырь Антим — защитить ковенские барьеры',
+        type: 'coven',
+        effects: { covens_rep: 2, flag: 'go_antim', clue: 'Финальный ритуал: монастырь Антим' },
+        goto: 17
+      },
+      {
+        text: 'Площадь Революции — туда, где страх сильнее всего',
+        effects: { sanity: -10, veil: 15, flag: 'go_revolution', clue: 'Финальный ритуал: площадь Революции — сердце коллективного страха' },
+        goto: 17
+      }
+    ]
+  },
+
+  17: {
+    title: 'Союзники',
+    location: 'БУХАРЕСТ // ТРЕТЬЯ НОЧЬ // 22:30',
+    text: `Час и тридцать до полуночи. Время звонить тем, кому ты доверяешь — или тем, кто полезен, что не всегда одно и то же. 
+Думитреску может поднять боевую группу: двадцать вампиров, умеющих воевать в темноте. Но они придут за своим — они хотят уничтожить Культ, не просто остановить ритуал. 
+Магистериум может перекрыть выходы из города: никто не уйдёт, включая тебя. Они могут активировать протокол Омега — что бы это ни значило. 
+Ковены могут попробовать одновременно запечатать все семь узлов. Это убьёт нескольких из них. Мира знает об этом и уже готова. 
+Штефан Мань — если ты ему поверил — знает финальное слово ритуала. Он может произнести его в обратном порядке. Один раз. Это его остановит или убьёт его.
+Ты можешь взять двух союзников. Не больше.`,
+    choices: [
+      {
+        text: 'Думитреску + Ковены — сила и ритуальная защита',
+        condition: { flag: 'vamp_ally' },
+        type: 'vamp',
+        effects: { vampires_rep: 2, covens_rep: 2, flag: 'allies_vc', clue: 'Коалиция: Думитреску и Ковены идут на финал' },
+        goto: 18
+      },
+      {
+        text: 'Магистериум + Думитреску — официальная сила плюс вампиры',
+        condition: { magisterium_rep: 3 },
+        type: 'magi',
+        effects: { magisterium_rep: 2, vampires_rep: 1, flag: 'allies_mv', clue: 'Коалиция: Магистериум и Думитреску — хрупкий союз' },
+        goto: 18
+      },
+      {
+        text: 'Ковены + Штефан — ритуальная защита и знание Культа изнутри',
+        condition: { flag: 'hunter_ally' },
+        type: 'coven',
+        effects: { covens_rep: 2, flag: 'allies_cl', clue: 'Коалиция: Ковены и Штефан Мань — маленькая группа, точный удар' },
+        goto: 18
+      },
+      {
+        text: 'Идти в одиночку — никто не заслуживает доверия достаточно',
+        effects: { sanity: -5, flag: 'solo_final', veil: 10 },
+        goto: 18
+      }
+    ]
+  },
+
+  18: {
+    title: 'Ритуальное Место',
+    location: 'БУХАРЕСТ // МЕСТО ФИНАЛЬНОГО РИТУАЛА // 23:45',
+    text: `Четверть до полуночи. Место ритуала выглядит именно так, как должно выглядеть конец света местного масштаба: красиво и страшно одновременно. 
+Культисты стоят кругом. Их лица скрыты капюшонами с символом спящего глаза. В центре — что-то пульсирует: не свет, не тьма, а разрыв между ними. 
+Элена Шербан стоит у центра, если ты её не арестовал — или её заменил кто-то другой, если арестовал. Безликий Жрец здесь тоже: неподвижный, монолитный. 
+Пульсация нарастает. Каждый, кто стоит рядом, начинает видеть края чужих снов: смутные образы, далёкие голоса. 
+Завеса истончается. Ещё немного — и Спящий увидит не только Бухарест.
+Через пятнадцать минут это станет необратимым.`,
+    choices: [
+      {
+        text: 'Атаковать — разорвать круг ритуала физически',
+        effects: { sanity: -10, veil: -10, flag: 'chose_attack' },
+        goto: 19
+      },
+      {
+        text: 'Использовать союзников — дать сигнал к скоординированному удару',
+        condition: { flag: 'allies_vc' },
+        effects: { sanity: 5, flag: 'chose_coalition' },
+        goto: 19
+      },
+      {
+        text: 'Использовать союзников — дать сигнал к скоординированному удару',
+        condition: { flag: 'allies_mv' },
+        effects: { sanity: 5, flag: 'chose_coalition' },
+        goto: 19
+      },
+      {
+        text: 'Использовать союзников — дать сигнал к скоординированному удару',
+        condition: { flag: 'allies_cl' },
+        effects: { sanity: 5, flag: 'chose_coalition' },
+        goto: 19
+      },
+      {
+        text: 'Попробовать войти в контакт со Спящим напрямую — через Завесу',
+        condition: { veil: 50 },
+        effects: { sanity: -20, veil: 20, flag: 'chose_contact' },
+        goto: 19
+      },
+      {
+        text: 'Произнести обратное слово — если Штефан Мань рядом',
+        condition: { flag: 'hunter_ally' },
+        effects: { sanity: -5, flag: 'chose_word' },
+        goto: 19
+      }
+    ]
+  },
+
+  19: {
+    title: 'Полночь',
+    location: 'БУХАРЕСТ // МЕСТО РИТУАЛА // 00:00',
+    text: `Полночь приходит как удар тока. 
+Небо над местом ритуала меняет цвет — не на чёрный, а на цвет закрытых глаз изнутри. Город слышит это: в радиусе километра гаснет свет, замолкают машины, птицы падают на землю в летаргическом трансе. 
+Пульсация становится присутствием. Спящий смотрит через разрыв в Завесе — и ты первый, кого Он видит достаточно близко. 
+Ты чувствуешь: Он не зол. Не добр. Он просто настолько огромен, что понятия "зло" и "добро" к Нему неприменимы. 
+В это мгновение ты понимаешь, что финал зависит не от того, что ты сделаешь сейчас — а от того, кем ты стал за три ночи расследования. 
+Твои союзники, твои улики, твоя репутация — всё это складывается в один-единственный момент выбора.`,
+    choices: [
+      {
+        text: 'Шагнуть вперёд. Принять то, что идёт.',
+        effects: { veil: 20 },
+        goto: 20
+      }
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────────
+  //  АКТ IV: ФИНАЛ (Сцена 20 — 5 концовок)
+  // ─────────────────────────────────────────────────────────
+
+  20: {
+    title: 'Финал',
+    location: 'БУХАРЕСТ // КОНЕЦ',
+    text: '', // Текст формируется динамически в determineEnding()
+    choices: []
+  }
+};
+
+// =============================================================
+//   ЛОГИКА ФИНАЛОВ (5 концовок)
+// =============================================================
+const ENDINGS = {
+
+  // ФИНАЛ 1: Путь Вампиров — Новый Договор
+  vampire_pact: {
+    condition: () => state.vampires_rep >= 6 && state.magisterium_rep < state.covens_rep + 2,
+    color: 'var(--crimson)',
+    label: 'ФИНАЛ I',
+    title: 'Новый Договор',
+    text: `Клан Думитреску прорывает круг ритуала в ту секунду, когда разрыв достигает максимума.
+Адриан стоит перед Спящим — и говорит на языке, которому четыре века. Ты не понимаешь слов, но чувствуешь смысл: это переговоры, не молитва.
+Спящий принимает Новый Договор. Пробуждения не будет — но вампирские кланы становятся Его стражами в Бухаресте. Город остаётся. Люди остаются. Но Изнанка отныне принадлежит мёртвым.
+Ты получаешь деньги. Ты получаешь благодарность. Ты получаешь право уехать из города, который больше никогда не будет прежним.
+В поезде ты смотришь в окно. Бухарест уменьшается. Тебе кажется, что он смотрит тебе вслед.`,
+    color_label: '🩸 ПУТЬ ВАМПИРОВ'
+  },
+
+  // ФИНАЛ 2: Путь Магистериума — Протокол Омега
+  magisterium_omega: {
+    condition: () => state.magisterium_rep >= 6,
+    color: 'var(--gold)',
+    label: 'ФИНАЛ II',
+    title: 'Протокол Омега',
+    text: `Нора Бэлческу появляется в последнюю секунду — с командой специального реагирования Магистериума.
+Протокол Омега оказывается тем, чего никто не ожидал: они не убивают Культ. Они запечатывают разрыв, используя накопленную Завесу как пломбу. Это работает.
+Спящий не просыпается. Разрыв закрывается. Элена Шербан исчезает — не арестована, просто исчезает.
+Магистериум получает контроль над Изнанкой. Семь узлов переходят под их наблюдение. Бухарест официально становится "зоной повышенного оккультного мониторинга".
+Ты получаешь должность консультанта. Официальную зарплату. Служебное жильё. И каждую ночь — кошмары о том, что могло случиться, если бы ты чуть-чуть ошибся.`,
+    color_label: '⚖ ПУТЬ МАГИСТЕРИУМА'
+  },
+
+  // ФИНАЛ 3: Путь Ковенов — Запечатывание
+  coven_seal: {
+    condition: () => state.covens_rep >= 6 && state.clues.includes('Карта ритуальных узлов Бухареста — 7 точек, три уже активны'),
+    color: 'var(--violet)',
+    label: 'ФИНАЛ III',
+    title: 'Великое Запечатывание',
+    text: `Мира даёт сигнал. Семь ведьм в семи точках города одновременно разрушают узлы.
+Это звучит как тихий выдох — и город слышит его весь. В Изнанке гаснут оккультные огни. Культисты падают без сознания — не мертвые, просто спящие, что жестоко символично.
+Разрыв закрывается изнутри. Ковены платят ценой: трое из семи не просыпаются. Мира стоит над их телами и не плачет — она уже знала.
+Спящий уходит — не в небытие, а глубже. Он будет снова. Через поколение, через два. Но сейчас — нет.
+Ты помогаешь хоронить трёх ведьм в рассветном Бухаресте. На похоронах нет Магистериума. Нет вампиров. Только Изнанка оплакивает своих.`,
+    color_label: '✦ ПУТЬ КОВЕНОВ'
+  },
+
+  // ФИНАЛ 4: Путь Охотника — Обратное Слово
+  hunter_word: {
+    condition: () => state.flags['hunter_ally'] && state.flags['chose_word'],
+    color: 'var(--amber)',
+    label: 'ФИНАЛ IV',
+    title: 'Обратное Слово',
+    text: `Штефан Мань произносит слово в обратном порядке.
+Это не магия — это антимагия. Разрыв схлопывается. Ритуальный круг гаснет. Культисты в панике разбегаются — без Спящего они просто люди в капюшонах, испуганные и потерявшиеся.
+Штефан падает. Ты успеваешь поймать его — он дышит, но в его глазах больше нет той усталой осознанности. Он смотрит вокруг как человек, который только что проснулся после очень долгого сна.
+"Я не помню своё имя," — говорит он.
+Ты помнишь. Штефан Мань. Бывший агент Культа. Теперь — просто человек без прошлого.
+Бухарест просыпается в обычное утро. Никто не знает, что было этой ночью. Именно так и должно быть.`,
+    color_label: '◎ ПУТЬ ОХОТНИКА'
+  },
+
+  // ФИНАЛ 5: Путь Завесы — Слияние
+  veil_merge: {
+    condition: () => state.veil >= 70 || (state.sanity <= 30 && state.flags['chose_contact']),
+    color: 'var(--teal)',
+    label: 'ФИНАЛ V',
+    title: 'По ту сторону Завесы',
+    text: `Ты шагаешь в разрыв.
+Это не смерть. Это — расширение. Спящий не ожидал этого: кто-то с настолько истончённой Завесой, настолько пропитанный Изнанкой, входит в контакт не как жертва, а как равный.
+Ты видишь Бухарест сверху и снизу одновременно. Ты видишь всех — Адриана, Нору, Миру, Штефана, Элену — как точки света в огромной тёмной сети.
+Спящий замирает. Впервые за века — удивлён.
+Ты остаёшься в разрыве. Частично. Твоё тело стоит на площади, живое, дышащее. Но часть тебя теперь — там, где нет времени.
+Культ растворяется без вождя. Ритуал прерван изнутри. Бухарест просыпается.
+Ты смотришь на свои руки. Сквозь них — едва заметно — просвечивает что-то, чего раньше не было.`,
+    color_label: '◈ ПУТЬ ЗАВЕСЫ'
+  },
+
+  // Дефолтный финал (если ни одно условие не выполнено)
+  default_ending: {
+    condition: () => true,
+    color: 'var(--ghost)',
+    label: 'ФИНАЛ',
+    title: 'Один в Темноте',
+    text: `Всё происходит слишком быстро и слишком медленно одновременно.
+Ритуал завершается. Спящий просыпается — не полностью, не окончательно, но достаточно. Завеса в Бухаресте становится тоньше на порядок.
+Культ уходит в подполье. Магистериум засекречивает произошедшее. Вампирские кланы уходят глубже в Изнанку. Ковены молчат.
+Ты покидаешь город на рассвете, в переполненном трамвае, с тощим кошельком и толстым блокнотом улик, которые некому предъявить.
+В Бухаресте ничего не изменилось — и изменилось всё. Люди видят кошмары чуть ярче, чуть реальнее. Просыпаются чуть медленнее.
+Спящий продолжает смотреть.
+Как всегда.`,
+    color_label: '◇ НЕЗАВИСИМЫЙ ПУТЬ'
+  }
+};
+
+// =============================================================
+//   ОПРЕДЕЛЕНИЕ ФИНАЛА
+// =============================================================
+function determineEnding() {
+  // Порядок проверки: сначала специфичные, потом дефолт
+  const order = ['hunter_word', 'veil_merge', 'vampire_pact', 'magisterium_omega', 'coven_seal', 'default_ending'];
+  for (const key of order) {
+    if (ENDINGS[key].condition()) return ENDINGS[key];
+  }
+  return ENDINGS.default_ending;
+}
+
+// =============================================================
+//   РЕНДЕРИНГ СЦЕНЫ
+// =============================================================
+function renderScene(sceneId) {
+  state.current_scene = sceneId;
+  updateHUD();
+
+  if (sceneId === 20) {
+    showEnding();
+    return;
+  }
+
+  const scene = SCENES[sceneId];
+  if (!scene) return;
+
+  const screen = document.getElementById('game-screen');
+
+  // Создаём новый контент
+  const choices = scene.choices
+    .filter(c => checkCondition(c.condition))
+    .map((c, i) => {
+      const typeClass = c.type === 'vamp' ? 'vamp-choice' : c.type === 'magi' ? 'magi-choice' : c.type === 'coven' ? 'coven-choice' : '';
+      const prefix = String.fromCharCode(65 + i); // A, B, C...
+      const factionTag = c.type === 'vamp' ? '<span class="faction-tag ftag-v">ВАМПИРЫ</span>' :
+                         c.type === 'magi' ? '<span class="faction-tag ftag-m">МАГИСТЕРИУМ</span>' :
+                         c.type === 'coven' ? '<span class="faction-tag ftag-c">КОВЕНЫ</span>' : '';
+      return `<button class="choice-btn ${typeClass}" onclick="chooseOption(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+        <span class="choice-prefix">[${prefix}]</span>${c.text}${factionTag}
+      </button>`;
+    }).join('');
+
+  const html = `
+    <div class="scene-header">
+      <div class="scene-location">${scene.location}</div>
+      <h1 class="scene-title">${scene.title}</h1>
+    </div>
+    <div class="scene-text">${scene.text}</div>
+    <div class="choices-wrap">${choices || '<p style="color:var(--dim);font-size:14px">Нет доступных вариантов — рассудок определяет путь.</p>'}</div>
+  `;
+
+  // Fade-out → обновление → fade-in
+  screen.classList.add('fade-out');
+  setTimeout(() => {
+    screen.innerHTML = html;
+    screen.classList.remove('fade-out');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 350);
+}
+
+// =============================================================
+//   ОБРАБОТКА ВЫБОРА
+// =============================================================
+function chooseOption(choice) {
+  applyEffects(choice.effects);
+
+  // Небольшая задержка для тостов, затем переход
+  setTimeout(() => {
+    const next = choice.goto;
+    if (next === 20 || next === 'ending') {
+      renderScene(20);
+    } else {
+      renderScene(next);
+    }
+  }, 400);
+}
+
+// =============================================================
+//   ПОКАЗ ФИНАЛА
+// =============================================================
+function showEnding() {
+  const ending = determineEnding();
+  const screen = document.getElementById('game-screen');
+  const endScreen = document.getElementById('ending-screen');
+
+  screen.style.display = 'none';
+  endScreen.classList.add('show');
+
+  const clueList = state.clues.map(c => `<div class="clue-item">${c}</div>`).join('');
+
+  endScreen.innerHTML = `
+    <div class="ending-label">// РАССЛЕДОВАНИЕ ЗАВЕРШЕНО //</div>
+    <div style="display:inline-block;font-family:'Share Tech Mono',monospace;font-size:11px;color:${ending.color};
+      border:1px solid ${ending.color};padding:4px 12px;border-radius:2px;margin-bottom:16px;letter-spacing:2px;">
+      ${ending.label} · ${ending.color_label}
+    </div>
+    <div class="ending-title" style="color:${ending.color};text-shadow:0 0 30px ${ending.color}40;">
+      ${ending.title}
+    </div>
+    <hr class="ending-divider" style="background:${ending.color};">
+    <div class="ending-text">${ending.text.replace(/\n/g, '<br><br>')}</div>
+    <div class="ending-stats">
+      <div style="text-align:center">
+        <div style="color:var(--dim);font-size:10px;margin-bottom:4px">РАССУДОК</div>
+        <div style="color:var(--teal)">${state.sanity}%</div>
+      </div>
+      <div style="text-align:center">
+        <div style="color:var(--dim);font-size:10px;margin-bottom:4px">ЗАВЕСА</div>
+        <div style="color:var(--violet)">${state.veil}%</div>
+      </div>
+      <div style="text-align:center">
+        <div style="color:var(--dim);font-size:10px;margin-bottom:4px">🩸 ВАМПИРЫ</div>
+        <div style="color:var(--crimson)">${state.vampires_rep}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="color:var(--dim);font-size:10px;margin-bottom:4px">⚖ МАГИСТЕРИУМ</div>
+        <div style="color:var(--gold)">${state.magisterium_rep}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="color:var(--dim);font-size:10px;margin-bottom:4px">✦ КОВЕНЫ</div>
+        <div style="color:var(--violet)">${state.covens_rep}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="color:var(--dim);font-size:10px;margin-bottom:4px">УЛИКИ</div>
+        <div style="color:var(--amber)">${state.clues.length}</div>
+      </div>
+    </div>
+    <div style="max-width:500px;margin:0 auto 24px;text-align:left;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:8px;">◆ СОБРАННЫЕ УЛИКИ</div>
+      ${clueList || '<div class="clue-item" style="color:var(--muted)">Улики не собраны</div>'}
+    </div>
+    <button class="restart-btn" onclick="restartGame()">⟳ НАЧАТЬ НОВОЕ РАССЛЕДОВАНИЕ</button>
+  `;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =============================================================
+//   СТАРТ И РЕСТАРТ
+// =============================================================
+function startGame() {
+  const splash = document.getElementById('splash-screen');
+  splash.classList.add('hidden');
+  setTimeout(() => { splash.style.display = 'none'; }, 800);
+  renderScene(1);
+}
+
+function restartGame() {
+  // Сброс состояния
+  state.sanity = 100;
+  state.veil = 0;
+  state.vampires_rep = 0;
+  state.magisterium_rep = 0;
+  state.covens_rep = 0;
+  state.clues = [];
+  state.current_scene = 1;
+  state.flags = {};
+
+  const endScreen = document.getElementById('ending-screen');
+  const screen = document.getElementById('game-screen');
+  endScreen.classList.remove('show');
+  endScreen.innerHTML = '';
+  screen.style.display = 'block';
+
+  updateHUD();
+  renderScene(1);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =============================================================
+//   ИНИЦИАЛИЗАЦИЯ
+// =============================================================
+// Обновить HUD при загрузке
+updateHUD();
+</script>
+</body>
+</html>
