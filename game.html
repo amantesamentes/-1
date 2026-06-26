@@ -637,7 +637,7 @@
 
 <!-- ===== ЭКРАН ЗАСТАВКИ ===== -->
 <div id="splash-screen">
-  <div class="splash-subtitle">// BUCHAREST UNDERGROUND // 2026 // ПЛЬТЕРНАТИВНЫЙ СЮЖЕТ //</div>
+  <div class="splash-subtitle">// BUCHAREST UNDERGROUND // 2026 //</div>
   <div class="splash-title">CODUL NOPȚII</div>
   <div class="splash-ru">Кодекс Ночи</div>
   <div class="splash-desc">
@@ -1719,11 +1719,11 @@ function saveEndingImage() {
   ctx.scale(SCALE, SCALE);
 
   // Фон
-  ctx.fillStyle = '#07090f';
+  ctx.fillStyle = '#111927';
   ctx.fillRect(0, 0, W, H);
 
   // Сетка
-  ctx.strokeStyle = 'rgba(26,188,156,0.04)';
+  ctx.strokeStyle = 'rgba(26,188,156,0.07)';
   ctx.lineWidth = 1;
   for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
   for (let y2 = 0; y2 < H; y2 += 40) { ctx.beginPath(); ctx.moveTo(0,y2); ctx.lineTo(W,y2); ctx.stroke(); }
@@ -1737,7 +1737,7 @@ function saveEndingImage() {
 
   // Метка сверху
   ctx.font = '500 11px "Share Tech Mono", monospace';
-  ctx.fillStyle = '#4a6080'; ctx.textAlign = 'center';
+  ctx.fillStyle = '#7a9ab8'; ctx.textAlign = 'center';
   ctx.fillText('// РАССЛЕДОВАНИЕ ЗАВЕРШЕНО //', W/2, y); y += 22;
 
   // Бейдж финала
@@ -1759,7 +1759,7 @@ function saveEndingImage() {
 
   // Текст финала
   ctx.font = '400 ' + BODY_SZ + 'px Rajdhani, sans-serif';
-  ctx.fillStyle = '#8099b8'; ctx.textAlign = 'left';
+  ctx.fillStyle = '#d0dcea'; ctx.textAlign = 'left';
   bodyLines.forEach(line => {
     if (!line) { y += BODY_LH * 0.6; return; }
     ctx.fillText(line, PAD, y); y += BODY_LH;
@@ -1768,7 +1768,7 @@ function saveEndingImage() {
 
   // Панель статистики
   const statW = INNER / stats.length, STAT_H = 64;
-  ctx.fillStyle = '#1c2535'; ctx.strokeStyle = '#2a3a52'; ctx.lineWidth = 1;
+  ctx.fillStyle = '#243040'; ctx.strokeStyle = '#3a4f6a'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.roundRect(PAD, y - 10, INNER, STAT_H, 4);
   ctx.fill(); ctx.stroke();
 
@@ -1779,7 +1779,7 @@ function saveEndingImage() {
       ctx.beginPath(); ctx.moveTo(PAD + statW*i, y-4); ctx.lineTo(PAD + statW*i, y+STAT_H-16); ctx.stroke();
     }
     ctx.font = '500 9px "Share Tech Mono", monospace';
-    ctx.fillStyle = '#4a6080'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#8099b8'; ctx.textAlign = 'center';
     ctx.fillText(s.label.toUpperCase(), cx, y + 16);
     ctx.font = '700 16px "Share Tech Mono", monospace';
     ctx.fillStyle = s.color;
