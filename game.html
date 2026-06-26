@@ -637,7 +637,7 @@
 
 <!-- ===== ЭКРАН ЗАСТАВКИ ===== -->
 <div id="splash-screen">
-  <div class="splash-subtitle">// BUCHAREST UNDERGROUND // 2026 //</div>
+  <div class="splash-subtitle">// BUCHAREST UNDERGROUND // 2026 // АЛЬТЕРНАТИВНЫЙ СЮЖЕТ //</div>
   <div class="splash-title">CODUL NOPȚII</div>
   <div class="splash-ru">Кодекс Ночи</div>
   <div class="splash-desc">
@@ -1695,8 +1695,7 @@ function saveEndingImage() {
 
   function wrap(ctx, text, maxW) {
     const lines = [];
-    text.split('
-').forEach(para => {
+    text.split('\n').forEach(para => {
       if (!para.trim()) { lines.push(''); return; }
       let line = '';
       para.split(' ').forEach(word => {
