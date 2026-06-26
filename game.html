@@ -430,7 +430,9 @@
     font-size: 16px;
     line-height: 1.8;
     color: var(--ghost);
-    text-align: left;
+    text-align: left !important;
+    word-spacing: normal !important;
+    hyphens: none !important;
   }
 
   .save-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
@@ -627,7 +629,6 @@
   /* Выделение текста */
   ::selection { background: rgba(26,188,156,0.25); color: var(--ice); }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -636,7 +637,7 @@
 
 <!-- ===== ЭКРАН ЗАСТАВКИ ===== -->
 <div id="splash-screen">
-  <div class="splash-subtitle">// BUCHAREST // 2026 // АЛЬТЕРНАТИВНЫЙ СЮЖЕТ //</div>
+  <div class="splash-subtitle">// BUCHAREST UNDERGROUND // 2026 // ПЛЬТЕРНАТИВНЫЙ СЮЖЕТ //</div>
   <div class="splash-title">CODUL NOPȚII</div>
   <div class="splash-ru">Кодекс Ночи</div>
   <div class="splash-desc">
@@ -1660,46 +1661,139 @@ function startGame() {
 // =============================================================
 //   СОХРАНЕНИЕ ФИНАЛА КАК ИЗОБРАЖЕНИЯ
 // =============================================================
-function saveEndingImage(fmt) {
-  const endScreen = document.getElementById('ending-screen');
-  const btnPng = document.getElementById('btn-save-png');
-  if (btnPng) { btnPng.disabled = true; btnPng.textContent = '...'; }
+function saveEndingImage() {
+  const btn = document.getElementById('btn-save-png');
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
-  // Временно скрываем кнопки сохранения, чтобы они не попали на скриншот
-  const saveBtns = endScreen.querySelector('.save-btns');
-  if (saveBtns) saveBtns.style.visibility = 'hidden';
+  const endingEl  = document.getElementById('ending-screen');
+  const titleEl   = endingEl.querySelector('.ending-title');
+  const labelEl   = endingEl.querySelector('[style*="border:1px solid"]');
+  const textEl    = endingEl.querySelector('.ending-text');
+  const statCells = endingEl.querySelectorAll('.estat-cell');
 
-  // Задержка, чтобы DOM обновился
-  setTimeout(() => {
-    html2canvas(endScreen, {
-      backgroundColor: '#07090f',
-      scale: 2,             // Ретина-качество
-      useCORS: true,
-      logging: false,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      windowWidth: document.documentElement.scrollWidth,
-      windowHeight: endScreen.scrollHeight + 60,
-    }).then(canvas => {
-      if (saveBtns) saveBtns.style.visibility = 'visible';
-      if (btnPng) { btnPng.disabled = false; btnPng.textContent = '⬇ Сохранить PNG'; }
+  const title     = titleEl  ? titleEl.textContent.trim()  : '';
+  const labelText = labelEl  ? labelEl.textContent.trim()  : '';
+  const bodyText  = textEl   ? textEl.innerText.trim()     : '';
+  const accent    = (titleEl && titleEl.style.color) ? titleEl.style.color : '#1abc9c';
 
-      const mimeType = fmt === 'jpg' ? 'image/jpeg' : 'image/png';
-      const quality  = fmt === 'jpg' ? 0.92 : undefined;
-      const dataURL  = fmt === 'jpg' ? canvas.toDataURL(mimeType, quality) : canvas.toDataURL(mimeType);
-      const ext      = fmt === 'jpg' ? 'jpg' : 'png';
+  const stats = [];
+  statCells.forEach(cell => {
+    const lbl = cell.querySelector('.estat-lbl');
+    const val = cell.querySelector('.estat-val');
+    if (lbl && val) stats.push({ label: lbl.textContent, value: val.textContent, color: val.style.color || '#c9d6e8' });
+  });
 
-      const a = document.createElement('a');
-      a.href = dataURL;
-      a.download = `codul-noptii-ending.${ext}`;
-      a.click();
-    }).catch(err => {
-      if (saveBtns) saveBtns.style.visibility = 'visible';
-      if (btnPng) { btnPng.disabled = false; btnPng.textContent = '⬇ Сохранить PNG'; }
-      console.error('Ошибка сохранения:', err);
-      alert('Не удалось создать изображение. Попробуйте сделать скриншот вручную.');
+  const W = 900, SCALE = 2, PAD = 56, INNER = W - PAD * 2;
+  const BODY_SZ = 15, BODY_LH = BODY_SZ * 1.75;
+
+  // Измеряем перенос строк
+  const tmp = document.createElement('canvas');
+  tmp.width = W * SCALE;
+  const tc = tmp.getContext('2d');
+  tc.scale(SCALE, SCALE);
+  tc.font = '400 ' + BODY_SZ + 'px Rajdhani, sans-serif';
+
+  function wrap(ctx, text, maxW) {
+    const lines = [];
+    text.split('
+').forEach(para => {
+      if (!para.trim()) { lines.push(''); return; }
+      let line = '';
+      para.split(' ').forEach(word => {
+        const t = line ? line + ' ' + word : word;
+        if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = word; }
+        else line = t;
+      });
+      if (line) lines.push(line);
     });
-  }, 80);
+    return lines;
+  }
+
+  const bodyLines = wrap(tc, bodyText, INNER);
+  const H = Math.ceil(PAD + 22 + 32 + 18 + 50 + bodyLines.length * BODY_LH + PAD + 74 + PAD);
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = W * SCALE;
+  canvas.height = H * SCALE;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(SCALE, SCALE);
+
+  // Фон
+  ctx.fillStyle = '#07090f';
+  ctx.fillRect(0, 0, W, H);
+
+  // Сетка
+  ctx.strokeStyle = 'rgba(26,188,156,0.04)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y2 = 0; y2 < H; y2 += 40) { ctx.beginPath(); ctx.moveTo(0,y2); ctx.lineTo(W,y2); ctx.stroke(); }
+
+  // Виньетка
+  const vg = ctx.createRadialGradient(W/2,H/2,H*0.15,W/2,H/2,H*0.7);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(7,9,15,0.7)');
+  ctx.fillStyle = vg; ctx.fillRect(0,0,W,H);
+
+  let y = PAD;
+
+  // Метка сверху
+  ctx.font = '500 11px "Share Tech Mono", monospace';
+  ctx.fillStyle = '#4a6080'; ctx.textAlign = 'center';
+  ctx.fillText('// РАССЛЕДОВАНИЕ ЗАВЕРШЕНО //', W/2, y); y += 22;
+
+  // Бейдж финала
+  ctx.font = '700 11px "Share Tech Mono", monospace';
+  ctx.fillStyle = accent;
+  ctx.fillText(labelText, W/2, y); y += 32;
+
+  // Заголовок со свечением
+  ctx.font = '700 34px Cinzel, serif';
+  ctx.fillStyle = accent;
+  ctx.shadowColor = accent; ctx.shadowBlur = 24;
+  ctx.fillText(title, W/2, y);
+  ctx.shadowBlur = 0; y += 18;
+
+  // Разделитель
+  ctx.strokeStyle = accent; ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(W/2-40, y); ctx.lineTo(W/2+40, y); ctx.stroke();
+  ctx.globalAlpha = 1; y += PAD;
+
+  // Текст финала
+  ctx.font = '400 ' + BODY_SZ + 'px Rajdhani, sans-serif';
+  ctx.fillStyle = '#8099b8'; ctx.textAlign = 'left';
+  bodyLines.forEach(line => {
+    if (!line) { y += BODY_LH * 0.6; return; }
+    ctx.fillText(line, PAD, y); y += BODY_LH;
+  });
+  y += PAD * 0.8;
+
+  // Панель статистики
+  const statW = INNER / stats.length, STAT_H = 64;
+  ctx.fillStyle = '#1c2535'; ctx.strokeStyle = '#2a3a52'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.roundRect(PAD, y - 10, INNER, STAT_H, 4);
+  ctx.fill(); ctx.stroke();
+
+  stats.forEach((s, i) => {
+    const cx = PAD + statW * i + statW / 2;
+    if (i > 0) {
+      ctx.strokeStyle = '#2a3a52'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(PAD + statW*i, y-4); ctx.lineTo(PAD + statW*i, y+STAT_H-16); ctx.stroke();
+    }
+    ctx.font = '500 9px "Share Tech Mono", monospace';
+    ctx.fillStyle = '#4a6080'; ctx.textAlign = 'center';
+    ctx.fillText(s.label.toUpperCase(), cx, y + 16);
+    ctx.font = '700 16px "Share Tech Mono", monospace';
+    ctx.fillStyle = s.color;
+    ctx.fillText(s.value, cx, y + 38);
+  });
+
+  // Скачать
+  setTimeout(function() {
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'codul-noptii-ending.png';
+    a.click();
+    if (btn) { btn.disabled = false; btn.textContent = '⬇ Сохранить результат'; }
+  }, 50);
 }
 
 function restartGame() {
