@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аутфит для похода на летний бал у фейри</title>
+    <!-- Подключение элегантных шрифтов -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #070a08;        /* Глубокий, почти черный лесной фон */
+            --bg-board: #101712;       /* Темный изумрудно-моховой планшет */
+            --border-color: #233629;   /* Приглушенные хвойные рамки */
+            --hover-border: #42634c;   /* Светлая хвоя при наведении */
+            --text-main: #8ba391;      /* Пепельно-зеленый текст */
+            --text-title: #c8d6cb;     /* Светлый лесной заголовок */
+            --slot-bg: #0b110d;        /* Фон пустых слотов */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        /* Экспортируемая область */
+        #capture-area {
+            background-color: var(--bg-board);
+            padding: 40px 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--text-title);
+            text-align: center;
+            margin: 0 0 30px 0;
+            letter-spacing: 1px;
+            line-height: 1.4;
+        }
+
+        .moodboard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        /* Квадратный слот с зафиксированными пропорциями */
+        .image-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: var(--slot-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: border-color 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .image-container:hover {
+            border-color: var(--hover-border);
+        }
+
+        .placeholder-text {
+            font-size: 10px;
+            text-transform: lowercase;
+            letter-spacing: 2px;
+            color: #4c5d50;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .controls {
+            margin-top: 35px;
+        }
+
+        button {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 22px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        button:hover {
+            background-color: var(--border-color);
+            color: var(--text-title);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="capture-area">
+        <h1>Аутфит для похода на<br>летний бал у фейри</h1>
+        <div class="moodboard" id="moodboard">
+            <div class="image-container" id="slot1" onclick="triggerUpload(1)">
+                <span class="placeholder-text" id="text1">✧ деталь 1</span>
+            </div>
+            <div class="image-container" id="slot2" onclick="triggerUpload(2)">
+                <span class="placeholder-text" id="text2">✧ деталь 2</span>
+            </div>
+            <div class="image-container" id="slot3" onclick="triggerUpload(3)">
+                <span class="placeholder-text" id="text3">✧ деталь 3</span>
+            </div>
+            <div class="image-container" id="slot4" onclick="triggerUpload(4)">
+                <span class="placeholder-text" id="text4">✧ деталь 4</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="saveMoodboard()">сохранить эстетику</button>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*" onchange="loadImage(event)">
+
+    <script>
+        let currentImageId = null;
+
+        function triggerUpload(id) {
+            currentImageId = id;
+            document.getElementById('fileInput').click();
+        }
+
+        function loadImage(event) {
+            const file = event.target.files[0];
+            if (file && currentImageId) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const slot = document.getElementById(`slot${currentImageId}`);
+                    const textElement = document.getElementById(`text${currentImageId}`);
+                    
+                    // Установка фото фоном (гарантия сохранения пропорций без растягивания)
+                    slot.style.backgroundImage = `url('${e.target.result}')`;
+                    textElement.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+            event.target.value = ''; 
+        }
+
+        function saveMoodboard() {
+            const captureArea = document.getElementById('capture-area');
+            const originalShadow = captureArea.style.boxShadow;
+            captureArea.style.boxShadow = 'none'; 
+
+            html2canvas(captureArea, { 
+                backgroundColor: "#101712",
+                scale: 3,
+                useCORS: true 
+            }).then(canvas => {
+                captureArea.style.boxShadow = originalShadow;
+                
+                const link = document.createElement('a');
+                link.download = 'dark_fairy_ball_outfit.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>
