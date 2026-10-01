@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Планер Instagram стрічки</title>
+    <!-- Бібліотека для збереження сітки як картинки -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 15px;
+            color: #262626;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        p.info {
+            font-size: 14px;
+            color: #737373;
+            margin-bottom: 16px;
+            text-align: center;
+            max-width: 420px;
+            line-height: 1.4;
+        }
+
+        /* Перемикач форматів */
+        .format-switch {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background-color: #efefef;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .format-btn {
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            color: #737373;
+            transition: all 0.2s;
+        }
+
+        .format-btn.active {
+            background-color: #ffffff;
+            color: #262626;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Контейнер сітки Інстаграм */
+        .instagram-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Карточка поста - за замовчуванням 4:5 */
+        .post-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+            user-select: none;
+        }
+
+        .post-card.ratio-1-1 {
+            aspect-ratio: 1 / 1;
+        }
+
+        .post-card:active {
+            cursor: grabbing;
+        }
+
+        .post-card.dragging {
+            opacity: 0.3;
+            transform: scale(0.95);
+        }
+
+        /* Замість <img> тепер використовуємо div з фоном, щоб html2canvas не стискав фото */
+        .img-preview {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            pointer-events: none; /* Щоб клік проходив на картку */
+        }
+
+        /* Кнопка видалення окремого фото */
+        .delete-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(220, 38, 38, 0.9);
+            transform: scale(1.1);
+        }
+
+        /* Заглушка */
+        .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #8e8e8e;
+            font-size: 12px;
+            pointer-events: none;
+            position: absolute; /* Щоб центрувалось незалежно від інших елементів */
+        }
+
+        .placeholder .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+            font-weight: 300;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Кнопки керування */
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        .btn-save {
+            background-color: #0095f6;
+            color: #ffffff;
+        }
+
+        .btn-save:hover {
+            background-color: #1877f2;
+        }
+
+        .btn-clear {
+            background-color: #efefef;
+            color: #262626;
+        }
+
+        .btn-clear:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>grid planner</h1>
+
+    <!-- Перемикач пропорцій -->
+    <div class="format-switch">
+        <button class="format-btn active" id="btn-4-5" onclick="setRatio('4/5')">Формат 4:5 (Портрет)</button>
+        <button class="format-btn" id="btn-1-1" onclick="setRatio('1/1')">Формат 1:1 (Квадрат)</button>
+    </div>
+
+    <!-- Сітка -->
+    <div class="instagram-grid" id="grid">
+        <!-- 9 слотів -->
+    </div>
+
+    <!-- Кнопки дій -->
+    <div class="controls">
+        <button class="btn btn-save" id="btn-save" onclick="saveGridAsImage()">Зберегти сітку (PNG)</button>
+        <button class="btn btn-clear" onclick="clearAll()">Очистити все</button>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+
+        // Створення 9 карточок
+        for (let i = 1; i <= 9; i++) {
+            const card = document.createElement('div');
+            card.classList.add('post-card');
+            card.setAttribute('draggable', 'true');
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+
+            const placeholder = document.createElement('div');
+            placeholder.classList.add('placeholder');
+            placeholder.innerHTML = `<span class="icon">+</span><span>Фото ${i}</span>`;
+
+            // Використовуємо div з background-image замість <img>
+            const imgPreview = document.createElement('div');
+            imgPreview.classList.add('img-preview');
+            imgPreview.style.display = 'none';
+
+            // Кнопка видалення
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.innerHTML = '&times;';
+            deleteBtn.setAttribute('title', 'Видалити це фото');
+            deleteBtn.setAttribute('data-html2canvas-ignore', 'true');
+            deleteBtn.style.display = 'none';
+
+            // Логіка видалення одного фото
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                imgPreview.style.backgroundImage = '';
+                imgPreview.style.display = 'none';
+                placeholder.style.display = 'flex';
+                input.value = '';
+                deleteBtn.style.display = 'none';
+            });
+
+            card.appendChild(input);
+            card.appendChild(placeholder);
+            card.appendChild(imgPreview);
+            card.appendChild(deleteBtn);
+
+            card.addEventListener('click', () => {
+                if (!card.classList.contains('is-dragging')) {
+                    input.click();
+                }
+            });
+
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        // Задаємо фон замість src
+                        imgPreview.style.backgroundImage = `url(${evt.target.result})`;
+                        imgPreview.style.display = 'block';
+                        placeholder.style.display = 'none';
+                        deleteBtn.style.display = 'flex';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            grid.appendChild(card);
+        }
+
+        // Drag and Drop
+        let draggedItem = null;
+
+        grid.addEventListener('dragstart', (e) => {
+            const target = e.target.closest('.post-card');
+            if (target) {
+                draggedItem = target;
+                target.classList.add('dragging');
+                target.classList.add('is-dragging');
+            }
+        });
+
+        grid.addEventListener('dragend', (e) => {
+            const target = e.target.closest('.post-card');
+            if (target) {
+                target.classList.remove('dragging');
+                setTimeout(() => target.classList.remove('is-dragging'), 100);
+                draggedItem = null;
+            }
+        });
+
+        grid.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const target = e.target.closest('.post-card');
+            if (target && target !== draggedItem) {
+                const children = Array.from(grid.children);
+                const draggedIdx = children.indexOf(draggedItem);
+                const targetIdx = children.indexOf(target);
+
+                if (draggedIdx < targetIdx) {
+                    grid.insertBefore(draggedItem, target.nextSibling);
+                } else {
+                    grid.insertBefore(draggedItem, target);
+                }
+            }
+        });
+
+        // Формати 4:5 / 1:1
+        function setRatio(ratio) {
+            const cards = document.querySelectorAll('.post-card');
+            const btn45 = document.getElementById('btn-4-5');
+            const btn11 = document.getElementById('btn-1-1');
+
+            if (ratio === '1/1') {
+                cards.forEach(card => card.classList.add('ratio-1-1'));
+                btn11.classList.add('active');
+                btn45.classList.remove('active');
+            } else {
+                cards.forEach(card => card.classList.remove('ratio-1-1'));
+                btn45.classList.add('active');
+                btn11.classList.remove('active');
+            }
+        }
+
+        // Збереження сітки у файл зображення
+        function saveGridAsImage() {
+            const gridElement = document.getElementById('grid');
+            const saveBtn = document.getElementById('btn-save');
+            const originalText = saveBtn.innerText;
+            
+            saveBtn.innerText = 'Збереження...';
+            saveBtn.disabled = true;
+
+            html2canvas(gridElement, {
+                scale: 2, 
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'instagram-grid-plan.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                saveBtn.innerText = originalText;
+                saveBtn.disabled = false;
+            }).catch(err => {
+                alert('Не вдалося зберегти зображення.');
+                console.error(err);
+                saveBtn.innerText = originalText;
+                saveBtn.disabled = false;
+            });
+        }
+
+        // Очистити всі фотографії
+        function clearAll() {
+            if (confirm('Видалити всі завантажені фотографії?')) {
+                document.querySelectorAll('.post-card').forEach((card) => {
+                    const imgPreview = card.querySelector('.img-preview');
+                    const placeholder = card.querySelector('.placeholder');
+                    const input = card.querySelector('input');
+                    const deleteBtn = card.querySelector('.delete-btn');
+                    
+                    imgPreview.style.backgroundImage = '';
+                    imgPreview.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                    deleteBtn.style.display = 'none';
+                    input.value = '';
+                });
+            }
+        }
+    </script>
+</body>
+</html>
